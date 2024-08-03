@@ -22,3 +22,4 @@ export 'replacements.dart';
 export 'insights/class_insight.dart';
 export 'insights/file_insight.dart';
 export 'insights/dir_insight.dart';
+export 'load_file_from_github.dart';

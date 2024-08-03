@@ -8,20 +8,19 @@
 //.title~
 
 import 'insight_mapper.dart';
-import 'path_explorer.dart';
 import 'replacement_producer.dart';
 import 'replacements.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-class GeneratorConverger<TInsight, TPlaceholder extends Enum> {
+class GeneratorConverger<TInsight, TPlaceholder extends Enum, TFile> {
   //
   //
   //
 
   final Future<void> Function(
     Iterable<Replacements<TInsight>> insights,
-    List<FileReadResult> templates,
+    List<TFile> templates,
   ) _converge;
 
   //
@@ -36,7 +35,7 @@ class GeneratorConverger<TInsight, TPlaceholder extends Enum> {
 
   Future<void> Function(
     Iterable<TInsight> insights,
-    List<FileReadResult> templates,
+    List<TFile> templates,
     List<InsightMapper<TInsight, TPlaceholder>> insightMappers,
   ) get converge => (insights, templates, insightMappers) async {
         final produceReplacements =
