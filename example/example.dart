@@ -7,7 +7,13 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
+import 'dart:io';
+
+import 'package:df_config/df_config.dart';
 import 'package:df_gen_core/df_gen_core.dart';
+import 'package:df_log/df_log.dart';
+
+import 'package:path/path.dart' as p;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -72,7 +78,6 @@ void main(List<String> args) async {
   final test = await pathExplorer.explore().firstWhere((e) => e is DirPathExplorerFinding)
       as DirPathExplorerFinding;
 
-  printYellow((await test.files.toList()).map((e) => e.path));
 
   // printRed(await test.files.toList());
 

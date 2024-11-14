@@ -10,9 +10,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'get_path_combinations.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
+
+import '../df_gen_core.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 

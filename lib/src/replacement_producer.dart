@@ -8,6 +8,7 @@
 //.title~
 
 import '/src/_index.g.dart';
+import 'placeholder_on_enum_x.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
