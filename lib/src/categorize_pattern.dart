@@ -7,13 +7,13 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-final class CategorizedPattern<TCategory extends Enum> {
+final class CategorizedPattern<T> {
   //
   //
   //
 
   final String pattern;
-  final TCategory? category;
+  final T? category;
 
   //
   //
@@ -34,9 +34,9 @@ final class CategorizedPattern<TCategory extends Enum> {
   //
   //
 
-  static TCategory? categorize<TCategory extends Enum>(
+  static T? categorize<T>(
     String value,
-    Iterable<CategorizedPattern<TCategory>> patterns,
+    Iterable<CategorizedPattern<T>> patterns,
   ) {
     for (final e in patterns) {
       final expression = RegExp(e.pattern, caseSensitive: false);
@@ -51,11 +51,53 @@ final class CategorizedPattern<TCategory extends Enum> {
   //
   //
 
-  static const DEFAULT = _DefaultCategory.DEFAULT;
+  static bool matchesAny<T>(
+    String value,
+    Iterable<CategorizedPattern<T>> patterns,
+  ) {
+    if (patterns.isEmpty) {
+      throw ArgumentError('patterns cannot be empty');
+    }
+    for (final pattern in patterns) {
+      if (doesMatch(value, pattern)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static bool matchesAll<T>(
+    String value,
+    Iterable<CategorizedPattern<T>> patterns,
+  ) {
+    if (patterns.isEmpty) {
+      throw ArgumentError('patterns cannot be empty');
+    }
+    for (final pattern in patterns) {
+      if (!doesMatch(value, pattern)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static bool doesMatch<T>(
+    String value,
+    CategorizedPattern<T> pattern,
+  ) {
+    final expression = RegExp(pattern.pattern, caseSensitive: false);
+    return expression.hasMatch(value);
+  }
+
+  //
+  //
+  //
+
+  static const DEFAULT = _DefaulT.DEFAULT;
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-enum _DefaultCategory {
+enum _DefaulT {
   DEFAULT,
 }

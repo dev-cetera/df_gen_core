@@ -7,167 +7,141 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
+import 'dart:async';
 import 'dart:io';
 
+import 'get_path_combinations.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
 
-import 'categorize_pattern.dart';
-import 'combined_paths.dart';
-
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// A mechanism to explore files and folders from specified [dirPathGroups].
-class PathExplorer<TCategory extends Enum> {
+/// A mechanism to explore files and folders from specified [combinations].
+class PathExplorer {
   //
   //
   //
 
-  final Set<CombinedPaths> dirPathGroups;
-  final Iterable<CategorizedPattern<TCategory>> categorizedPathPatterns;
+  final Set<GetPathCombinations> combinations;
 
   //
   //
   //
 
   const PathExplorer({
-    this.categorizedPathPatterns = const [
-      CategorizedPattern(
-        pattern: r'.*',
-      ),
-    ],
-    required this.dirPathGroups,
+    required this.combinations,
   });
 
   //
   //
   //
 
-  /// Explores [dirPathGroups] while adhering to [categorizedPathPatterns].
-  ///
-  /// Returns the subfiles and subfolders found.
-  _TExploreResult<TCategory> explore() async {
-    final dirPathResults = <DirPathExplorerResult<TCategory>>{};
-    final filePathResults = <FilePathExplorerResult<TCategory>>{};
-
-    Future<DirPathExplorerResult<TCategory>> $exploreDir(
+  Stream<PathExplorerFinding> explore() async* {
+    Stream<PathExplorerFinding> recurse(
       String dirPath,
-      DirPathExplorerResult? parent,
-    ) async {
-      // 1. Find all dirPaths and filePaths in dirPath.
-      final contentPaths = await _listNormalizedDirContentPaths(dirPath);
-      final filePaths = <String>[];
-      final dirPaths = <String>[];
-      for (final contentPath in contentPaths) {
-        if (await FileSystemEntity.isDirectory(contentPath)) {
-          dirPaths.add(contentPath);
-        }
-        if (await FileSystemEntity.isFile(contentPath)) {
-          filePaths.add(contentPath);
-        }
-      }
-
-      // 2. Create a local filePathResults for the current directory.
-      final currentDirFilePathResults = <FilePathExplorerResult<TCategory>>{};
-      for (final filePath in filePaths) {
-        final x = FilePathExplorerResult<TCategory>._(
-          category: CategorizedPattern.categorize<TCategory>(filePath, categorizedPathPatterns),
-          path: filePath,
-        );
-        currentDirFilePathResults.add(x);
-      }
-      filePathResults.addAll(currentDirFilePathResults);
-
-      // 3. Recursively explore subdirectories.
-      final subDirResults = <DirPathExplorerResult<TCategory>>{};
-      for (final subDirPath in dirPaths) {
-        final subDirResult = await $exploreDir(subDirPath, parent);
-        subDirResults.add(subDirResult);
-      }
-
-      // 4. Create the current directory result.
-      final dirResult = DirPathExplorerResult<TCategory>._(
-        category: CategorizedPattern.categorize<TCategory>(dirPath, categorizedPathPatterns),
-        path: dirPath,
-        files: currentDirFilePathResults,
-        dirs: subDirResults,
-        parentDir: parent,
-      );
-
-      dirPathResults.add(dirResult);
-      return dirResult;
-    }
-
-    final rootDirPathResults = <DirPathExplorerResult<TCategory>>{};
-
-    // 0. Explore each dirPath in all dirPathGroups.
-    for (final dirPathGroup in dirPathGroups) {
-      for (final dirPath in dirPathGroup.paths) {
-        final dirResult = await $exploreDir(dirPath, null);
-        rootDirPathResults.add(dirResult);
-      }
-    }
-
-    return (
-      rootDirPathResults: rootDirPathResults,
-      dirPathResults: dirPathResults,
-      filePathResults: filePathResults,
-    );
-  }
-
-  //
-  //
-  //
-
-  /// Calls [explore] then reads every file found up to [limit] files if specified.
-  Future<List<FileReadResult>> readAll({int? limit}) async {
-    final explorerResults = await this.explore();
-    final results = <FileReadResult>[];
-    var filePathResults = explorerResults.filePathResults;
-    if (limit != null) {
-      filePathResults.take(limit);
-    }
-    for (final filePathResult in filePathResults) {
-      try {
-        final path = filePathResult.path;
-        final file = File(path);
-        final contents = await file.readAsString();
-        if (contents.isNotEmpty) {
-          results.add(
-            FileReadResult._(path: path, content: contents),
+      DirPathExplorerFinding Function()? parentDir,
+    ) async* {
+      final paths = _normalizedDirContent(dirPath);
+      await for (final path in paths) {
+        if (await FileSystemEntity.isDirectory(path)) {
+          DirPathExplorerFinding? temp;
+          final s = recurse(path, () => temp!);
+          temp = DirPathExplorerFinding._(
+            path: path,
+            files: s.where((e) => e is FilePathExplorerFinding).cast<FilePathExplorerFinding>(),
+            dirs: s.where((e) => e is DirPathExplorerFinding).cast<DirPathExplorerFinding>(),
+            parentDir: parentDir,
           );
+          yield temp;
+          yield* s;
+        } else {
+          yield FilePathExplorerFinding._(path: path);
         }
-      } catch (_) {}
+      }
     }
-    return List.unmodifiable(results);
+
+    for (final get in combinations) {
+      for (final dirPath in get()) {
+        final dirFindingStream = recurse(dirPath, null);
+
+        // Yield the top-level findings and subdirectories/files
+        yield* dirFindingStream;
+      }
+    }
   }
 
-  //
-  //
-  //
+  // Stream<PathExplorerFinding> explore() async* {
+  //   Stream<PathExplorerFinding> $exploreDir(
+  //     String dirPath,
+  //     DirPathExplorerFinding Function()? parentDir,
+  //   ) {
+  //     return _normalizedDirContent(dirPath).asBroadcastStream().asyncMap((p) async {
+  //       if (await FileSystemEntity.isDirectory(p)) {
+  //         printRed(p);
+  //         DirPathExplorerFinding? temp;
+  //         final stream = $exploreDir(p, () => temp!);
+  //         temp = DirPathExplorerFinding._(
+  //           path: p,
+  //           files:
+  //               stream.where((e) => e is FilePathExplorerFinding).cast<FilePathExplorerFinding>(),
+  //           dirs: stream.where((e) => e is DirPathExplorerFinding).cast<DirPathExplorerFinding>(),
+  //           parentDir: parentDir,
+  //         );
+  //         return temp;
+  //       }
+  //       return FilePathExplorerFinding._(
+  //         path: p,
+  //       );
+  //     });
+  //   }
 
-  /// Lists all contents of the given [dirPath].
-  static Future<List<String>> _listNormalizedDirContentPaths(String dirPath) async {
-    final dir = Directory(dirPath);
-    if (!await dir.exists()) {
-      return [];
+  //   for (final dirPathGroup in combinations) {
+  //     for (final dirPath in dirPathGroup.combinations) {
+  //       final dirFinding = $exploreDir(dirPath, null);
+  //       yield* dirFinding;
+  //     }
+  //   }
+  // }
+
+  /// Calls [explore] and reads the content of each file found up to [limit] files if specified.
+  /// Returns a stream of [FileReadFinding] containing file paths and their content.
+  Stream<FileReadFinding> readAll({int? limit}) async* {
+    final explorerStream = explore();
+    var count = 0;
+
+    await for (final finding in explorerStream) {
+      if (finding is FilePathExplorerFinding) {
+        if (limit != null && count >= limit) {
+          break;
+        }
+        try {
+          final path = finding.path;
+          final file = File(path);
+          final contents = await file.readAsString();
+          if (contents.isNotEmpty) {
+            yield FileReadFinding._(path: path, content: contents);
+            count++;
+          }
+        } catch (_) {
+          // Optionally handle errors here
+        }
+      }
     }
-    return dir.list(recursive: false).map((e) => p.normalize(e.path)).toList();
   }
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef _TExploreResult<TCategory extends Enum> = Future<
+typedef TPathExplorerFindings = Future<
     ({
-      Set<DirPathExplorerResult<TCategory>> rootDirPathResults,
-      Set<DirPathExplorerResult<TCategory>> dirPathResults,
-      Set<FilePathExplorerResult<TCategory>> filePathResults,
+      Set<DirPathExplorerFinding> rootDirPathFindings,
+      Set<DirPathExplorerFinding> dirPathFindings,
+      Set<FilePathExplorerFinding> filePathFindings,
     })>;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-class FileReadResult extends Equatable {
+final class FileReadFinding extends Equatable {
   //
   //
   //
@@ -179,7 +153,7 @@ class FileReadResult extends Equatable {
   //
   //
 
-  const FileReadResult._({
+  const FileReadFinding._({
     required this.path,
     required this.content,
   });
@@ -206,34 +180,32 @@ class FileReadResult extends Equatable {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-final class FilePathExplorerResult<TCategory extends Enum> extends PathExplorerResult<TCategory> {
+final class FilePathExplorerFinding extends PathExplorerFinding {
   //
   //
   //
 
-  const FilePathExplorerResult._({
-    super.category,
+  const FilePathExplorerFinding._({
     required super.path,
   });
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-final class DirPathExplorerResult<TCategory extends Enum> extends PathExplorerResult<TCategory> {
+final class DirPathExplorerFinding extends PathExplorerFinding {
   //
   //
   //
 
-  final Iterable<FilePathExplorerResult> files;
-  final Iterable<DirPathExplorerResult> dirs;
-  final DirPathExplorerResult? parentDir;
+  final Stream<FilePathExplorerFinding> files;
+  final Stream<DirPathExplorerFinding> dirs;
+  final DirPathExplorerFinding Function()? parentDir;
 
   //
   //
   //
 
-  const DirPathExplorerResult._({
-    super.category,
+  const DirPathExplorerFinding._({
     required super.path,
     required this.files,
     required this.dirs,
@@ -244,68 +216,62 @@ final class DirPathExplorerResult<TCategory extends Enum> extends PathExplorerRe
   //
   //
 
-  Set<DirPathExplorerResult> getSubDirs() {
-    final subDirs = <DirPathExplorerResult>{};
-    void $traverse(DirPathExplorerResult dir) {
-      subDirs.addAll(dir.dirs);
-      for (final subDir in dir.dirs) {
-        $traverse(subDir);
-      }
+  Stream<DirPathExplorerFinding> getSubDirs() async* {
+    await for (final dir in dirs) {
+      yield dir;
+      yield* dir.getSubDirs();
     }
-
-    $traverse(this);
-    return subDirs;
   }
 
-  //
-  //
-  //
-
-  Set<FilePathExplorerResult> getSubFiles() {
-    final subFiles = <FilePathExplorerResult>{};
-    void $traverse(DirPathExplorerResult dir) {
-      subFiles.addAll(dir.files);
-      for (final subDir in dir.dirs) {
-        $traverse(subDir);
-      }
+  Stream<FilePathExplorerFinding> getSubFiles() async* {
+    await for (final file in files) {
+      yield file;
     }
-
-    $traverse(this);
-    return subFiles;
+    await for (final dir in dirs) {
+      yield* dir.getSubFiles().asBroadcastStream();
+    }
   }
-
-  //
-  //
-  //
-
-  @override
-  List<Object?> get props =>
-      [this.path, this.category, ...this.files, ...this.dirs, this.parentDir];
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-abstract base class PathExplorerResult<TCategory extends Enum> extends Equatable {
+sealed class PathExplorerFinding {
   //
   //
   //
 
   final String path;
-  final TCategory? category;
 
   //
   //
   //
 
-  const PathExplorerResult({
+  const PathExplorerFinding({
     required this.path,
-    this.category,
   });
-
-  //
-  //
-  //
-
-  @override
-  List<Object?> get props => [this.path, this.category];
 }
+
+//
+//
+//
+
+/// Lists all contents of the given [dirPath].
+Stream<String> _normalizedDirContent(
+  String dirPath,
+) async* {
+  final dirPathUri = Uri.parse(dirPath);
+  final dir = Directory.fromUri(dirPathUri);
+  yield* dir.list(recursive: false).map((e) => p.normalize(e.path));
+}
+
+// Stream<FilePathExplorerFinding> flattenDirsToFiles(Stream<PathExplorerFinding> dirStream) async* {
+//   await for (final e in dirStream) {
+//     if (e is DirPathExplorerFinding) {
+//       yield* e.files;
+//       yield* flattenDirsToFiles(e.dirs);
+//     }
+//     if (e is FilePathExplorerFinding) {
+//       yield e;
+//     }
+//   }
+// }

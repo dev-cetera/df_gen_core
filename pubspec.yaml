@@ -20,11 +20,11 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  df_config: ">=0.0.0 <1.0.0"
-  df_collection: ">=0.0.0 <1.0.0"
-  df_type: ">=0.0.0 <1.0.0"
-  df_string: ">=0.0.0 <1.0.0"
-  df_log: ">=0.0.0 <1.0.0"
+  df_collection: ^0.8.3
+  df_config: ^0.5.3
+  df_log: ^0.2.4
+  df_string: ^0.2.3
+  df_type: ^0.7.5
 
   analyzer: ^6.4.1
   source_gen: ^1.5.0

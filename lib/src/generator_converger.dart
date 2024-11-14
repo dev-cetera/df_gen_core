@@ -7,9 +7,9 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'insight_mapper.dart';
+import 'structures/insight_mapper.dart';
 import 'replacement_producer.dart';
-import 'replacements.dart';
+import 'structures/replacements.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -19,7 +19,7 @@ class GeneratorConverger<TInsight, TPlaceholder extends Enum, TFile> {
   //
 
   final Future<void> Function(
-    Iterable<Replacements<TInsight>> insights,
+    Iterable<Intersection<TInsight>> insights,
     List<TFile> templates,
   ) _converge;
 
@@ -44,7 +44,7 @@ class GeneratorConverger<TInsight, TPlaceholder extends Enum, TFile> {
           insights.map(
             (a) {
               return produceReplacements(a).then((b) {
-                return Replacements(
+                return Intersection(
                   insight: a,
                   replacements: b,
                 );
