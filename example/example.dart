@@ -73,30 +73,18 @@ void main(List<String> args) async {
   );
 
   final findings =
-      pathExplorer.explore().where((e) => e is FilePathExplorerFinding && e.path.endsWith('.dart'));
+      pathExplorer.explore().where((e) => e is FilePathExplorerFinding && _isDartFileName(e.path));
 
-  final test = await pathExplorer.explore().firstWhere((e) => e is DirPathExplorerFinding)
-      as DirPathExplorerFinding;
+  final filePaths = await findings.toList();
 
-
-  // printRed(await test.files.toList());
-
-  final filePaths1 = await findings.toList();
-
-  printRed(filePaths1.map((e) => e.path).join('\n'));
-
-  final intersection = PerFileListIntersection<void>(
-    sourceFilePathOrUrlList: filePaths1.map((e) => e.path),
-    sourceTemplatePathOrUrl: templatePathOrUrl,
-    replacements: {
-      '___PUBLIC_EXPORTS___': publicExports(
-        inputPath,
-        filePaths1.map((e) => e.path),
-        (e) => true,
-        (e) => 'export \'$e\';',
-      )
-    },
-  );
+  final replacementMap = {
+    '___PUBLIC_EXPORTS___': publicExports(
+      inputPath,
+      filePaths.map((e) => e.path),
+      (e) => true,
+      (e) => 'export \'$e\';',
+    ),
+  };
 
   // Step 3: Load templates or additional info.
 
@@ -106,7 +94,7 @@ void main(List<String> args) async {
     exit(EXIT_FAILURE);
   }
   final template = extractCodeFromMarkdown(result.unwrap(), langCode: Lang.DART.code);
-  final output = template.replaceData(intersection.replacements);
+  final output = template.replaceData(replacementMap);
 
   printRed(output);
 
@@ -114,12 +102,12 @@ void main(List<String> args) async {
 }
 
 String publicExports(
-  String rootDirPath,
+  String inputPath,
   Iterable<String> filePaths,
   bool Function(String filePath) test,
   String Function(String baseName) statementBuilder,
 ) {
-  final relativeFilePaths = filePaths.map((e) => p.relative(e, from: rootDirPath));
+  final relativeFilePaths = filePaths.map((e) => p.relative(e, from: inputPath));
   final exportFilePaths = relativeFilePaths.where((e) => test(e));
   final statements = exportFilePaths.map(statementBuilder);
   return statements.join('\n');
