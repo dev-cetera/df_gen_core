@@ -15,10 +15,9 @@ import 'package:path/path.dart' as p;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-// [STEP 1] Define come constants to hold default argument values:
+// [STEP 1] Define some constants to hold default argument values:
 const _DEFAULT_TEMPLATE_PATH_OR_URL =
     'https://raw.githubusercontent.com/robmllze/df_generate_dart_indexes/main/templates/template.dart.md';
-const _DEFAULT_INPUT_PATH = '.';
 const _DEFAULT_OUTPUT_PATH = '{folder}.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -33,7 +32,9 @@ void main(List<String> args) async {
     example: 'dfidx -i . -o _index.g.dart',
     params: [
       DefaultFlags.HELP.flag,
-      DefaultOptions.INPUT_PATH.option.copyWith(defaultsTo: _DEFAULT_INPUT_PATH),
+      DefaultOptions.INPUT_PATH.option.copyWith(
+        defaultsTo: FileSystemUtility.i.currentScriptDir,
+      ),
       DefaultOptions.TEMPLATE_PATH_OR_URL.option
           .copyWith(defaultsTo: _DEFAULT_TEMPLATE_PATH_OR_URL),
       DefaultOptions.OUTPUT_PATH.option.copyWith(defaultsTo: _DEFAULT_OUTPUT_PATH),
@@ -66,8 +67,21 @@ void main(List<String> args) async {
   // [STEP 6] Decide on the output file path.
   outputFilePath = outputFilePath.replaceAll(
     '{folder}',
-    PathUtility.i.folderName(p.join(getCurrentScriptDir(), outputFilePath)),
+    PathUtility.i.folderName(
+      p.join(
+        FileSystemUtility.i.currentScriptDir,
+        outputFilePath,
+      ),
+    ),
   );
+  // If the output file path is relative, then make it relative to the current
+  // script directory.
+  if (p.isRelative(outputFilePath)) {
+    outputFilePath = p.join(
+      FileSystemUtility.i.currentScriptDir,
+      outputFilePath,
+    );
+  }
 
   // [STEP 7] Create a stream to get all files ending in .dart but not in
   // .g.dart and do not start with underscores.
@@ -89,7 +103,9 @@ void main(List<String> args) async {
   };
 
   // [STEP 9] Read the template file.
-  final result = await readTemplateFromPathOrUrl(templatePathOrUrl);
+  final result = await MdTemplateUtility.i.readTemplateFromPathOrUrl(
+    templatePathOrUrl,
+  );
   if (result.isErr) {
     printYellow('Failed to read template at: $templatePathOrUrl');
     exit(EXIT_FAILURE);

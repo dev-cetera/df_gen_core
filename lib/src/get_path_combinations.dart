@@ -15,7 +15,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:path/path.dart' as p;
 
-import '../path_utility.dart';
+import 'utilities/path_utility.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
