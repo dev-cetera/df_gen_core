@@ -273,3 +273,8 @@ final class FileSystemUtility {
     return results;
   }
 }
+
+Future<Result<String, Object>> readTemplateFromPathOrUrl(String templatePathOrUrl) async {
+  final result = await FileSystemUtility.i.readFileFromPathOrUrl(templatePathOrUrl);
+  return result.map((e) => extractCodeFromMarkdown(e));
+}

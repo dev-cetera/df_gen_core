@@ -7,7 +7,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'path_utils/io_utility.dart';
+import '../df_gen_core.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -32,7 +32,7 @@ Future<void> processCommentAnnots({
   final commentAnnotExp = RegExp(commentAnnotPattern);
 
   // Read all lines from the specified file at filePath.
-  final lines = await IoUtility.i.readLocalFileAsLinesOrNull(filePath);
+  final lines = await FileSystemUtility.i.readLocalFileAsLinesOrNull(filePath);
   if (lines == null || lines.isEmpty) return;
 
   // Strip strings per ignorePattern from annotationHandlers.
@@ -76,7 +76,7 @@ Future<void> processCommentAnnots({
         lines1.removeAt(index);
       }
     }
-    await IoUtility.i.writeLocalFile(filePath, lines1.join('\n'));
+    await FileSystemUtility.i.writeLocalFile(filePath, lines1.join('\n'));
   }
 }
 

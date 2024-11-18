@@ -29,13 +29,33 @@ class PathExplorer {
   //
   //
 
-  const PathExplorer({
+  factory PathExplorer(
+    String inputPath,
+  ) {
+    return PathExplorer.combinations(combinations: {
+      GetPathCombinations(
+        [
+          {inputPath},
+        ],
+      ),
+    });
+  }
+
+  const PathExplorer.combinations({
     required this.combinations,
   });
 
   //
   //
   //
+
+  Stream<FilePathExplorerFinding> exploreFiles() {
+    return explore().where((e) => e is FilePathExplorerFinding).cast<FilePathExplorerFinding>();
+  }
+
+  Stream<DirPathExplorerFinding> exploreDirs() {
+    return explore().where((e) => e is DirPathExplorerFinding).cast<DirPathExplorerFinding>();
+  }
 
   Stream<PathExplorerFinding> explore() async* {
     Stream<PathExplorerFinding> recurse(

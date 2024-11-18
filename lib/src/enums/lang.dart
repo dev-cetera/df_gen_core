@@ -84,7 +84,7 @@ enum Lang {
   /// 'hello.world' returns null, since 'world' is not valid for CommonLang.DART.
   /// ```
   String? getCorrespondingSrcPathOrNull(String filePath) {
-    final localSystemFilePath = toLocalSystemPathFormat(filePath);
+    final localSystemFilePath = PathUtility.i.localize(filePath);
     final dirName = p.dirname(localSystemFilePath);
     final baseName = p.basename(localSystemFilePath);
     final valid = isValidGenFilePath(localSystemFilePath);
@@ -110,7 +110,7 @@ enum Lang {
   /// 'hello.g.world' returns null, since 'world' is not valid for CommonLang.DART.
   /// ```
   String? getCorrespondingGenPathOrNull(String filePath) {
-    final localSystemFilePath = toLocalSystemPathFormat(filePath);
+    final localSystemFilePath = PathUtility.i.localize(filePath);
     final dirName = p.dirname(localSystemFilePath);
     final baseName = p.basename(localSystemFilePath);
     final valid = isValidSrcFilePath(localSystemFilePath);
@@ -133,17 +133,17 @@ enum Lang {
   /// checks if its generated file exists at the same location. The reverse
   /// also holds true.
   Future<bool> srcAndGenPairExistsFor(String filePath) async {
-    final a = await IoUtility.i.localFileExists(filePath);
+    final a = await FileSystemUtility.i.localFileExists(filePath);
     if (!a) {
       return false;
     }
     if (isValidSrcFilePath(filePath)) {
-      final b = await IoUtility.i.localFileExists(
+      final b = await FileSystemUtility.i.localFileExists(
         '${filePath.substring(0, filePath.length - ext.length)}$genExt',
       );
       return b;
     } else if (isValidGenFilePath(filePath)) {
-      final b = await IoUtility.i.localFileExists(
+      final b = await FileSystemUtility.i.localFileExists(
         '${filePath.substring(0, filePath.length - genExt.length)}$ext',
       );
       return b;
@@ -162,7 +162,7 @@ enum Lang {
     Set<String> pathPatterns = const {},
     Future<void> Function(String filePath)? onDelete,
   }) async {
-    final filePaths = await IoUtility.i.listLocalFilePaths(dirPath);
+    final filePaths = await FileSystemUtility.i.listLocalFilePaths(dirPath);
     if (filePaths != null) {
       final genFilePaths = filePaths.where(
         (e) => isValidSrcFilePath(e) && matchesAnyPathPattern(e, pathPatterns),
@@ -181,7 +181,7 @@ enum Lang {
   Future<bool> deleteSrcFile(String filePath) async {
     if (isValidSrcFilePath(filePath)) {
       try {
-        await IoUtility.i.deleteLocalFile(filePath);
+        await FileSystemUtility.i.deleteLocalFile(filePath);
         return true;
       } catch (_) {}
     }
@@ -198,7 +198,7 @@ enum Lang {
     Set<String> pathPatterns = const {},
     Future<void> Function(String filePath)? onDelete,
   }) async {
-    final filePaths = await IoUtility.i.listLocalFilePaths(dirPath);
+    final filePaths = await FileSystemUtility.i.listLocalFilePaths(dirPath);
     if (filePaths != null) {
       final genFilePaths = filePaths.where(
         (e) => isValidGenFilePath(e) && matchesAnyPathPattern(e, pathPatterns),
@@ -217,7 +217,7 @@ enum Lang {
   Future<bool> deleteGenFile(String filePath) async {
     if (isValidGenFilePath(filePath)) {
       try {
-        await IoUtility.i.deleteLocalFile(filePath);
+        await FileSystemUtility.i.deleteLocalFile(filePath);
         return true;
       } catch (_) {}
     }

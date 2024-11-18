@@ -25,7 +25,7 @@ List<String> extractCodeSnippetsFromMarkdown(
   String content, {
   String? langCode,
 }) {
-  final dartCodeRegex = RegExp('```(${langCode ?? '[^\\n]+'})\\n(.*?)```', dotAll: true);
+  final dartCodeRegex = RegExp('```(${langCode ?? '[^\\n]*'})\\n(.*?)```', dotAll: true);
   final matches = dartCodeRegex.allMatches(content);
   final snippets = matches.map((e) => e.group(2)?.trim() ?? '').toList();
   return snippets;

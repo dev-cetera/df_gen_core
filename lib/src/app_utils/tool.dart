@@ -5,14 +5,16 @@ import '../../df_gen_core.dart';
 
 // TODO: Add a command line package called df_cli_builder
 
-final class CliBuilder {
+final class CliParser {
   final String title;
   final String description;
+  final String example;
   final List<Param> params;
 
-  const CliBuilder({
+  const CliParser({
     required this.title,
     required this.description,
+    required this.example,
     required this.params,
   });
 
@@ -22,14 +24,27 @@ final class CliBuilder {
     }
   }
 
-  ({ArgResults argResults, ArgParser argParser}) build(List<String> args) {
+  (ArgResults argResults, ArgParser argParser) parse(List<String> args) {
     final argParser = ArgParser();
     addParamsTo(argParser);
     final argResults = argParser.parse(args);
     return (
-      argResults: argResults,
-      argParser: argParser,
+      argResults,
+      argParser,
     );
+  }
+
+  String getInfo(ArgParser argParser) {
+    final buffer = StringBuffer();
+    buffer.writeln(title);
+    buffer.writeln(description);
+    buffer.writeln();
+    buffer.writeln('Example:');
+    buffer.writeln('  $example');
+    buffer.writeln();
+    buffer.writeln('Options:');
+    buffer.write(argParser.usage);
+    return buffer.toString();
   }
 }
 
