@@ -48,7 +48,7 @@ void main(List<String> args) async {
   final help = argResults.flag(DefaultFlags.HELP.name);
   if (help) {
     printCyan(cliBuilder.getInfo(argParser));
-    exit(EXIT_SUCCESS);
+    exit(ExitCodes.SUCCESS.code);
   }
 
   // [STEP 5] Extract all the arguments we need.
@@ -61,7 +61,7 @@ void main(List<String> args) async {
     outputFilePath = argResults.option(DefaultOptions.OUTPUT_PATH.name)!;
   } catch (_) {
     printYellow('Missing required args! Use --help flag for more information.');
-    exit(EXIT_FAILURE);
+    exit(ExitCodes.FAILURE.code);
   }
 
   // [STEP 6] Decide on the output file path.
@@ -108,7 +108,7 @@ void main(List<String> args) async {
   );
   if (result.isErr) {
     printYellow('Failed to read template at: $templatePathOrUrl');
-    exit(EXIT_FAILURE);
+    exit(ExitCodes.FAILURE.code);
   }
 
   // [STEP 10] Replace the placeholders in the template with the actual values.
@@ -119,7 +119,7 @@ void main(List<String> args) async {
     await FileSystemUtility.i.writeLocalFile(outputFilePath, output);
   } catch (e) {
     printYellow('Failed to write at: $outputFilePath');
-    exit(EXIT_FAILURE);
+    exit(ExitCodes.FAILURE.code);
   }
 
   // [STEP 12] Print success!

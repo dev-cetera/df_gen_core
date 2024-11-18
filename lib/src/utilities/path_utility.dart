@@ -10,6 +10,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
+import 'package:df_collection/df_collection.dart' show TakeLastOnIterableX;
 import 'package:path/path.dart' as p;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -60,6 +61,11 @@ final class PathUtility {
     final folderPath = p.dirname(normalizedPath);
     return p.basename(folderPath);
   }
+}
+
+/// Takes the last 3 segments of the [path].
+String previewPath(String path) {
+  return '**${p.joinAll(p.split(path).takeLast(3))}';
 }
 
 /// Checks if the provided [path] contains any of the specified [components].

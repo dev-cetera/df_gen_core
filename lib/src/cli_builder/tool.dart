@@ -36,13 +36,15 @@ final class CliParser {
 
   String getInfo(ArgParser argParser) {
     final buffer = StringBuffer();
-    buffer.writeln(title);
+    buffer.writeln();
+    buffer.writeln('╔${'═' * (title.length + 2)}╗');
+    buffer.writeln('║ $title ║');
+    buffer.writeln('╚${'═' * (title.length + 2)}╝');
+    buffer.writeln();
     buffer.writeln(description);
     buffer.writeln();
-    buffer.writeln('Example:');
-    buffer.writeln('  $example');
+    buffer.writeln('e.g. $example');
     buffer.writeln();
-    buffer.writeln('Options:');
     buffer.write(argParser.usage);
     return buffer.toString();
   }
