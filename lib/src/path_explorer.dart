@@ -9,6 +9,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
@@ -91,38 +92,11 @@ class PathExplorer {
     }
   }
 
-  // Stream<PathExplorerFinding> explore() async* {
-  //   Stream<PathExplorerFinding> $exploreDir(
-  //     String dirPath,
-  //     DirPathExplorerFinding Function()? parentDir,
-  //   ) {
-  //     return _normalizedDirContent(dirPath).asBroadcastStream().asyncMap((p) async {
-  //       if (await FileSystemEntity.isDirectory(p)) {
-  //         printRed(p);
-  //         DirPathExplorerFinding? temp;
-  //         final stream = $exploreDir(p, () => temp!);
-  //         temp = DirPathExplorerFinding._(
-  //           path: p,
-  //           files:
-  //               stream.where((e) => e is FilePathExplorerFinding).cast<FilePathExplorerFinding>(),
-  //           dirs: stream.where((e) => e is DirPathExplorerFinding).cast<DirPathExplorerFinding>(),
-  //           parentDir: parentDir,
-  //         );
-  //         return temp;
-  //       }
-  //       return FilePathExplorerFinding._(
-  //         path: p,
-  //       );
-  //     });
-  //   }
-
-  //   for (final dirPathGroup in combinations) {
-  //     for (final dirPath in dirPathGroup.combinations) {
-  //       final dirFinding = $exploreDir(dirPath, null);
-  //       yield* dirFinding;
-  //     }
-  //   }
-  // }
+  Stream<FileData> readFiles(bool Function(FilePathExplorerFinding) filter) {
+    return exploreFiles()
+        .where(filter)
+        .asyncMap((a) async => File(a.path).readAsBytes().then((b) => FileData(a, b)));
+  }
 
   /// Calls [explore] and reads the content of each file found up to [limit] files if specified.
   /// Returns a stream of [FileReadFinding] containing file paths and their content.
@@ -200,6 +174,14 @@ final class FileReadFinding extends Equatable {
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+final class FileData {
+  final FilePathExplorerFinding finding;
+  final Uint8List content;
+  const FileData(this.finding, this.content);
+
+  String contentAsString() => String.fromCharCodes(content);
+}
 
 final class FilePathExplorerFinding extends PathExplorerFinding {
   //

@@ -7,11 +7,15 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_config/df_config.dart' show ReplaceDataOnStringExtension;
 import 'package:df_gen_core/df_gen_core.dart';
-import 'package:df_log/df_log.dart';
 
 import 'package:path/path.dart' as p;
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+void main(List<String> args) {
+  app(args);
+}
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -22,7 +26,7 @@ const _DEFAULT_OUTPUT_PATH = '{folder}.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-void main(List<String> args) async {
+void app(List<String> args) async {
   // [STEP 2] Create an instance of the CliBuilder class to help us manage
   // our CLI application.
   final cliBuilder = CliParser(
@@ -35,9 +39,12 @@ void main(List<String> args) async {
       DefaultOptions.INPUT_PATH.option.copyWith(
         defaultsTo: FileSystemUtility.i.currentScriptDir,
       ),
-      DefaultOptions.TEMPLATE_PATH_OR_URL.option
-          .copyWith(defaultsTo: _DEFAULT_TEMPLATE_PATH_OR_URL),
-      DefaultOptions.OUTPUT_PATH.option.copyWith(defaultsTo: _DEFAULT_OUTPUT_PATH),
+      DefaultOptions.TEMPLATE_PATH_OR_URL.option.copyWith(
+        defaultsTo: _DEFAULT_TEMPLATE_PATH_OR_URL,
+      ),
+      DefaultOptions.OUTPUT_PATH.option.copyWith(
+        defaultsTo: _DEFAULT_OUTPUT_PATH,
+      ),
     ],
   );
 
@@ -52,8 +59,8 @@ void main(List<String> args) async {
   }
 
   // [STEP 5] Extract all the arguments we need.
-  String inputPath;
-  String templatePathOrUrl;
+  late final String inputPath;
+  late final String templatePathOrUrl;
   String outputFilePath;
   try {
     inputPath = argResults.option(DefaultOptions.INPUT_PATH.name)!;
@@ -85,14 +92,14 @@ void main(List<String> args) async {
 
   // [STEP 7] Create a stream to get all files ending in .dart but not in
   // .g.dart and do not start with underscores.
-  final pathExplorerStream = PathExplorer(inputPath).exploreFiles();
-  final exportableFilePathStream = pathExplorerStream.where((e) => _isPublicFileName(e.path));
+  final filePathStream0 = PathExplorer(inputPath).exploreFiles();
+  final filePathStream1 = filePathStream0.where((e) => _isAllowedFileName(e.path));
 
   // [STEP 8] Create a replacement map for the template, to replace
   // placeholders in the template with the actual values. We also want to skip
   // the output file from being added to the exports file.
   final skipPath = p.relative(outputFilePath, from: inputPath);
-  final exportableFilePaths = await exportableFilePathStream.toList();
+  final exportableFilePaths = await filePathStream1.toList();
   final replacementMap = {
     '___PUBLIC_EXPORTS___': _publicExports(
       inputPath,
@@ -140,7 +147,7 @@ String _publicExports(
   return statements.join('\n');
 }
 
-bool _isPublicFileName(String e) {
+bool _isAllowedFileName(String e) {
   return !e.startsWith('_') &&
       !e.contains('${p.separator}_') &&
       !e.endsWith('.g.dart') &&

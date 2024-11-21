@@ -1,7 +1,4 @@
 import 'package:args/args.dart';
-import 'package:path/path.dart';
-
-import '../../df_gen_core.dart';
 
 // TODO: Add a command line package called df_cli_builder
 
@@ -9,12 +6,14 @@ final class CliParser {
   final String title;
   final String description;
   final String example;
+  final String additional;
   final List<Param> params;
 
   const CliParser({
-    required this.title,
-    required this.description,
-    required this.example,
+    this.title = '',
+    this.description = '',
+    this.example = '',
+    this.additional = '',
     required this.params,
   });
 
@@ -37,15 +36,26 @@ final class CliParser {
   String getInfo(ArgParser argParser) {
     final buffer = StringBuffer();
     buffer.writeln();
-    buffer.writeln('╔${'═' * (title.length + 2)}╗');
-    buffer.writeln('║ $title ║');
-    buffer.writeln('╚${'═' * (title.length + 2)}╝');
-    buffer.writeln();
-    buffer.writeln(description);
-    buffer.writeln();
-    buffer.writeln('e.g. $example');
-    buffer.writeln();
+    if (title.isNotEmpty) {
+      buffer.writeln('╔${'═' * (title.length + 2)}╗');
+      buffer.writeln('║ $title ║');
+      buffer.writeln('╚${'═' * (title.length + 2)}╝');
+      buffer.writeln();
+    }
+    if (description.isNotEmpty) {
+      buffer.writeln(description);
+      buffer.writeln();
+    }
+    if (example.isNotEmpty) {
+      buffer.writeln('e.g. "$example"');
+      buffer.writeln();
+    }
     buffer.write(argParser.usage);
+    buffer.writeln();
+    if (additional.isNotEmpty) {
+      buffer.writeln();
+      buffer.writeln(additional);
+    }
     return buffer.toString();
   }
 }
@@ -292,6 +302,12 @@ enum DefaultFlags {
 }
 
 enum DefaultOptions {
+  DART_SDK(
+    Option(
+      name: 'dart-sdk',
+      help: 'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
+    ),
+  ),
   INPUT_PATH(
     Option(
       name: 'input',

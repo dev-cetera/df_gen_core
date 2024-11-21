@@ -11,3 +11,6 @@
 library;
 
 export 'src/_index.g.dart';
+
+export 'package:df_config/df_config.dart' show ReplaceDataOnStringExtension;
+export 'package:df_log/df_log.dart';

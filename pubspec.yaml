@@ -9,13 +9,13 @@
 
 name: df_gen_core
 description: A package that provides core utilities for practical code generation.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/robmllze/df_gen_core
 
 ## -----------------------------------------------------------------------------
 
 environment:
-  sdk: ">=3.0.0 < 4.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 
 ## -----------------------------------------------------------------------------
 
