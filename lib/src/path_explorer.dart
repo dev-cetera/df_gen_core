@@ -33,13 +33,15 @@ class PathExplorer {
   factory PathExplorer(
     String inputPath,
   ) {
-    return PathExplorer.combinations(combinations: {
-      GetPathCombinations(
-        [
-          {inputPath},
-        ],
-      ),
-    });
+    return PathExplorer.combinations(
+      combinations: {
+        GetPathCombinations(
+          [
+            {inputPath},
+          ],
+        ),
+      },
+    );
   }
 
   const PathExplorer.combinations({

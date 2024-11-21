@@ -66,14 +66,14 @@ final class DartAnnotatedClassAnalyzer {
     Set<String>? inclClassAnnotations,
     Set<String>? inclMethodAnnotations,
     Set<String>? inclMemberAnnotations,
-    _TOnAnnotatedClassCallback? onAnnotatedClass,
-    _TOnClassAnnotationFieldCallback? onClassAnnotationField,
-    _TOnAnnotatedMethodCallback? onAnnotatedMethod,
-    _TOnMethodAnnotationFieldCallback? onMethodAnnotationField,
-    _TOnAnnotatedMemberCallback? onAnnotatedMember,
-    _TOnMemberAnnotationFieldsCallback? onMemberAnnotationField,
-    _TOnPreAnalysis? onPreAnalysis,
-    _TOnPostAnalysis? onPostAnalysis,
+    TOnAnnotatedClassCallback? onAnnotatedClass,
+    TOnClassAnnotationFieldCallback? onClassAnnotationField,
+    TOnAnnotatedMethodCallback? onAnnotatedMethod,
+    TOnMethodAnnotationFieldCallback? onMethodAnnotationField,
+    TOnAnnotatedMemberCallback? onAnnotatedMember,
+    TOnMemberAnnotationFieldsCallback? onMemberAnnotationField,
+    TOnPreAnalysis? onPreAnalysis,
+    TOnPostAnalysis? onPostAnalysis,
   }) async {
     final fullFilePath = p.normalize(p.absolute(filePath));
     final fullFileUri = Uri.file(fullFilePath);
@@ -133,8 +133,8 @@ final class DartAnnotatedClassAnalyzer {
     String fullFilePath,
     ClassElement classElement,
     RegExp? memberNameFilter,
-    _TOnAnnotatedMemberCallback? onAnnotatedMember,
-    _TOnMemberAnnotationFieldsCallback? onMemberAnnotationField,
+    TOnAnnotatedMemberCallback? onAnnotatedMember,
+    TOnMemberAnnotationFieldsCallback? onMemberAnnotationField,
     Set<String>? inclMemberAnnotations,
   ) async {
     for (final fieldElement in classElement.fields) {
@@ -191,8 +191,8 @@ final class DartAnnotatedClassAnalyzer {
     String fullFilePath,
     ClassElement classElement,
     RegExp? methodNameFilter,
-    _TOnAnnotatedMethodCallback? onAnnotatedMethod,
-    _TOnMethodAnnotationFieldCallback? onMethodAnnotationField,
+    TOnAnnotatedMethodCallback? onAnnotatedMethod,
+    TOnMethodAnnotationFieldCallback? onMethodAnnotationField,
     Set<String>? inclMethodAnnotations,
   ) async {
     for (final method in classElement.methods) {
@@ -241,8 +241,8 @@ final class DartAnnotatedClassAnalyzer {
   Future<void> _processClassAnnotations(
     String fullFilePath,
     ClassElement classElement,
-    _TOnAnnotatedClassCallback? onAnnotatedClass,
-    _TOnClassAnnotationFieldCallback? onClassAnnotationField,
+    TOnAnnotatedClassCallback? onAnnotatedClass,
+    TOnClassAnnotationFieldCallback? onClassAnnotationField,
     Set<String>? inclClassAnnotations,
   ) async {
     for (final metadata in classElement.metadata) {
@@ -282,7 +282,7 @@ final class DartAnnotatedClassAnalyzer {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Params for [_TOnAnnotatedClassCallback].
+/// Params for [TOnAnnotatedClassCallback].
 final class OnAnnotatedClassParams {
   final String fullFilePath;
   final String classAnnotationName;
@@ -295,13 +295,13 @@ final class OnAnnotatedClassParams {
   });
 }
 
-typedef _TOnAnnotatedClassCallback = Future<dynamic> Function(
+typedef TOnAnnotatedClassCallback = Future<dynamic> Function(
   OnAnnotatedClassParams parent,
 );
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Params for [_TOnClassAnnotationFieldCallback].
+/// Params for [TOnClassAnnotationFieldCallback].
 final class OnClassAnnotationFieldParams {
   final OnAnnotatedClassParams parent;
   final dynamic stick;
@@ -318,13 +318,13 @@ final class OnClassAnnotationFieldParams {
   });
 }
 
-typedef _TOnClassAnnotationFieldCallback = Future<dynamic> Function(
+typedef TOnClassAnnotationFieldCallback = Future<dynamic> Function(
   OnClassAnnotationFieldParams parent,
 );
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Params for [_TOnAnnotatedMethodCallback].
+/// Params for [TOnAnnotatedMethodCallback].
 final class OnAnnotatedMethodParams {
   final String fullFilePath;
   final String methodAnnotationName;
@@ -339,13 +339,13 @@ final class OnAnnotatedMethodParams {
   });
 }
 
-typedef _TOnAnnotatedMethodCallback = Future<dynamic> Function(
+typedef TOnAnnotatedMethodCallback = Future<dynamic> Function(
   OnAnnotatedMethodParams parent,
 );
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Params for [_TOnMethodAnnotationFieldCallback].
+/// Params for [TOnMethodAnnotationFieldCallback].
 final class OnMethodAnnotationFieldParams {
   final OnAnnotatedMethodParams parent;
   final dynamic stick;
@@ -362,13 +362,13 @@ final class OnMethodAnnotationFieldParams {
   });
 }
 
-typedef _TOnMethodAnnotationFieldCallback = Future<dynamic> Function(
+typedef TOnMethodAnnotationFieldCallback = Future<dynamic> Function(
   OnMethodAnnotationFieldParams parent,
 );
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Params for [_TOnAnnotatedMemberCallback].
+/// Params for [TOnAnnotatedMemberCallback].
 final class OnAnnotatedMemberParams {
   final String fullFilePath;
   final String memberAnnotationName;
@@ -385,13 +385,13 @@ final class OnAnnotatedMemberParams {
   });
 }
 
-typedef _TOnAnnotatedMemberCallback = Future<dynamic> Function(
+typedef TOnAnnotatedMemberCallback = Future<dynamic> Function(
   OnAnnotatedMemberParams parent,
 );
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Params for [_TOnMemberAnnotationFieldsCallback].
+/// Params for [TOnMemberAnnotationFieldsCallback].
 final class OnMemberAnnotationFieldParams {
   final OnAnnotatedMemberParams parent;
   final dynamic stick;
@@ -408,12 +408,12 @@ final class OnMemberAnnotationFieldParams {
   });
 }
 
-typedef _TOnMemberAnnotationFieldsCallback = Future<dynamic> Function(
+typedef TOnMemberAnnotationFieldsCallback = Future<dynamic> Function(
   OnMemberAnnotationFieldParams parent,
 );
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef _TOnPreAnalysis = void Function(String fullFilePath, String className);
+typedef TOnPreAnalysis = void Function(String fullFilePath, String className);
 
-typedef _TOnPostAnalysis = void Function(OnAnnotatedClassParams params);
+typedef TOnPostAnalysis = void Function(OnAnnotatedClassParams params);

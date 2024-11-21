@@ -23,7 +23,7 @@ import '../df_gen_core.dart';
 /// Strings matching [ignorePattern] within annotations are ignored.
 Future<void> processCommentAnnots({
   required String filePath,
-  required Map<String, _TLineCallback> onAnnotCallbacks,
+  required Map<String, TLineCallback> onAnnotCallbacks,
   required Set<String> annotsToDelete,
   String ignorePattern = r'[@_\s]',
   String commentAnnotPattern = r'^///?\s*@?([\w ]+)$',
@@ -82,7 +82,7 @@ Future<void> processCommentAnnots({
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef _TLineCallback = Future<bool> Function(
+typedef TLineCallback = Future<bool> Function(
   int lineNumber,
   List<String> lines,
   String filePath,
