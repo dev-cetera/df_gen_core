@@ -2,6 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 class Spinner {
+  String label;
+
+  Spinner({this.label = '***'});
+  Spinner.start({this.label = '***'}) {
+    start();
+  }
+
   Timer? _timer;
   int _index = 0;
   final List<String> _spinner = ['|', '/', '-', '\\'];
@@ -28,5 +35,14 @@ class Spinner {
       _timer!.cancel();
       _timer = null;
     }
+  }
+
+  void printAndResume(
+    void Function(String message) print,
+    String message,
+  ) {
+    this.stop();
+    print('[$label] $message');
+    this.start();
   }
 }
