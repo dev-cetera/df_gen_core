@@ -170,6 +170,9 @@ final class FileSystemUtility {
   /// Returns the directory path of the current script.
   String get currentScriptDir => Directory.fromUri(Platform.script).parent.path;
 
+  /// Returns the directory path of the current working directory.
+  String get currentDir => Directory.current.path;
+
   /// Returns the path of the `lib` directory of [package] or `null` if the
   /// package is not found.
   Future<String?> getPackageLibPath(String package) async {
