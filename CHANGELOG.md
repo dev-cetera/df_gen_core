@@ -1,5 +1,5 @@
 # Changelog
 
-## [0.5.3]
+## [0.5.4]
 
-- fix: Fix bugs
+- Updates
