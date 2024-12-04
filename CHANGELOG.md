@@ -1,5 +1,5 @@
 # Changelog
 
-## [0.5.2]
+## [0.5.3]
 
-- fix: Update 'help' option to default to false
+- fix: Fix bugs
