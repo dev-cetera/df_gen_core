@@ -25,6 +25,7 @@ final class CliParser {
 
   (ArgResults argResults, ArgParser argParser) parse(List<String> args) {
     final argParser = ArgParser();
+    addParamsTo(argParser);
     final argResults = argParser.parse(args);
     return (
       argResults,
