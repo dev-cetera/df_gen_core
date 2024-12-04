@@ -285,7 +285,7 @@ enum DefaultFlags {
       name: 'help',
       abbr: 'h',
       help: 'Help information.',
-      negatable: false,
+      defaultsTo: false,
     ),
   );
 

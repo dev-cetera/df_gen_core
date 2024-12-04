@@ -1,5 +1,5 @@
 # Changelog
 
-## [0.5.0]
+## [0.5.2]
 
-- Temporary premature release
+- fix: Update 'help' option to default to false
