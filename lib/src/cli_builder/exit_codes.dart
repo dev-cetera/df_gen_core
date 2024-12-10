@@ -43,7 +43,7 @@ enum ExitCodes {
   /// Cannot open input.
   NO_INPUT(66),
 
-  /// Addressee unknown.
+  /// AddreSee unknown.
   NO_USER(67),
 
   /// Host name unknown.
