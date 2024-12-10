@@ -1,5 +1,5 @@
 # Changelog
 
-## [0.5.6]
+## [0.5.7]
 
-- Update dependencies
+- chore: Update dependencies
