@@ -7,7 +7,31 @@ class TemplateInterpolator<T> {
 
   String interpolate(String template, T insight) {
     return template.replaceData(
-      map.map((k, v) => MapEntry(k, v(insight))),
+      map.map((k, v) {
+        return MapEntry(
+          k,
+          v(insight),
+        );
+      }),
+    );
+  }
+
+  String interpolateAndJoin(
+    String template,
+    List<T> insights, {
+    String separator = '\n',
+  }) {
+    return template.replaceData(
+      map.map(
+        (k, v) {
+          return MapEntry(
+            k,
+            insights.map((e) {
+              return v(e);
+            }).join(separator),
+          );
+        },
+      ),
     );
   }
 }
