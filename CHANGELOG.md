@@ -2,4 +2,4 @@
 
 ## [0.5.6]
 
-- Recent updates
+- Update dependencies
