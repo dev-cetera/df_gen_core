@@ -27,7 +27,7 @@ final class DartAnnotatedClassAnalyzer {
   //
 
   final String filePath;
-  final AnalysisContextCollection analysisContextCollection;
+  final dynamic analysisContextCollection;
 
   //
   //
@@ -36,7 +36,7 @@ final class DartAnnotatedClassAnalyzer {
   const DartAnnotatedClassAnalyzer({
     required this.filePath,
     required this.analysisContextCollection,
-  });
+  }) : assert(analysisContextCollection is AnalysisContextCollection);
 
   //
   //
