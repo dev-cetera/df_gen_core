@@ -12,7 +12,7 @@
 
 name: df_gen_core
 description: A package that provides core utilities for practical code generation.
-version: 0.5.9
+version: 0.5.10
 repository: https://github.com/robmllze/df_gen_core
 
 ## -----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ dependencies:
   collection: ^1.18.0
   equatable: ^2.0.7
   http: ^1.2.2
-  meta: ^1.16.0
+  meta: ^1.15.0
   path: ^1.9.1
   source_gen: ^1.5.0
 
