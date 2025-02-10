@@ -89,7 +89,8 @@ enum Lang {
     final baseName = p.basename(localSystemFilePath);
     final valid = isValidGenFilePath(localSystemFilePath);
     if (valid) {
-      final baseNameNoExt = baseName.substring(0, baseName.length - genExt.length);
+      final baseNameNoExt =
+          baseName.substring(0, baseName.length - genExt.length);
       final srcBaseName = '$baseNameNoExt$ext';
       final result = p.join(dirName, srcBaseName);
       return result;

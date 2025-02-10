@@ -78,9 +78,11 @@ final class DartAnnotatedClassAnalyzer {
     final fullFilePath = p.normalize(p.absolute(filePath));
     final fullFileUri = Uri.file(fullFilePath);
     final context = analysisContextCollection.contextFor(fullFilePath);
-    final library = await context.currentSession.getLibraryByUri(fullFileUri.toString());
+    final library =
+        await context.currentSession.getLibraryByUri(fullFileUri.toString());
     if (library is LibraryElementResult) {
-      final classElements = library.element.topLevelElements.whereType<ClassElement>();
+      final classElements =
+          library.element.topLevelElements.whereType<ClassElement>();
       for (final classElement in classElements) {
         final className = classElement.displayName;
         if (classNameFilter == null || classNameFilter.hasMatch(className)) {
@@ -138,13 +140,15 @@ final class DartAnnotatedClassAnalyzer {
     Set<String>? inclMemberAnnotations,
   ) async {
     for (final fieldElement in classElement.fields) {
-      if (memberNameFilter == null || memberNameFilter.hasMatch(fieldElement.displayName)) {
+      if (memberNameFilter == null ||
+          memberNameFilter.hasMatch(fieldElement.displayName)) {
         for (final fieldMetadata in fieldElement.metadata) {
           final memberAnnotationName = fieldMetadata.element?.displayName;
           if (memberAnnotationName != null &&
               inclMemberAnnotations?.contains(memberAnnotationName) != false) {
             final fieldElements = fieldMetadata.element;
-            final fieldNames = fieldElements?.children.map((e) => e.displayName);
+            final fieldNames =
+                fieldElements?.children.map((e) => e.displayName);
             var memberAnnotationFields = <String, DartObject>{};
             if (fieldNames != null) {
               memberAnnotationFields = Map.fromEntries(
@@ -196,7 +200,8 @@ final class DartAnnotatedClassAnalyzer {
     Set<String>? inclMethodAnnotations,
   ) async {
     for (final method in classElement.methods) {
-      if (methodNameFilter == null || methodNameFilter.hasMatch(method.displayName)) {
+      if (methodNameFilter == null ||
+          methodNameFilter.hasMatch(method.displayName)) {
         for (final methodMetadata in method.metadata) {
           final methodAnnotationName = methodMetadata.element?.displayName;
           if (methodAnnotationName != null &&
@@ -213,7 +218,9 @@ final class DartAnnotatedClassAnalyzer {
               final fieldNames = element?.children.map((e) => e.displayName);
               if (fieldNames != null) {
                 for (final fieldName in fieldNames) {
-                  final fieldValue = methodMetadata.computeConstantValue()?.getField(fieldName);
+                  final fieldValue = methodMetadata
+                      .computeConstantValue()
+                      ?.getField(fieldName);
                   if (fieldValue != null) {
                     await onMethodAnnotationField(
                       OnMethodAnnotationFieldParams(
@@ -260,7 +267,8 @@ final class DartAnnotatedClassAnalyzer {
           final fieldNames = element?.children.map((e) => e.displayName);
           if (fieldNames != null) {
             for (final fieldName in fieldNames) {
-              final fieldValue = metadata.computeConstantValue()?.getField(fieldName);
+              final fieldValue =
+                  metadata.computeConstantValue()?.getField(fieldName);
               if (fieldValue != null) {
                 await onClassAnnotationField(
                   OnClassAnnotationFieldParams(
