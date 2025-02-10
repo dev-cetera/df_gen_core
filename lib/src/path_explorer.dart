@@ -107,7 +107,8 @@ class PathExplorer {
 
   Stream<FileData> readFiles(bool Function(FilePathExplorerFinding) filter) {
     return exploreFiles().where(filter).asyncMap(
-        (a) async => File(a.path).readAsBytes().then((b) => FileData(a, b)),);
+          (a) async => File(a.path).readAsBytes().then((b) => FileData(a, b)),
+        );
   }
 
   /// Calls [explore] and reads the content of each file found up to [limit] files if specified.

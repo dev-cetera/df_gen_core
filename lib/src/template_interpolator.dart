@@ -1,6 +1,4 @@
 
-import '../df_gen_core.dart';
-
 class TemplateInterpolator<T> {
   final Map<String, String Function(T insight)> map;
 
