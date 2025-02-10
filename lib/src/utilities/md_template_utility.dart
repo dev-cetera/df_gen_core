@@ -1,7 +1,7 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by DevCetra.com & contributors. The use of this
+// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
 // source code is governed by an MIT-style license described in the LICENSE
 // file located in this project's root directory.
 //
@@ -10,7 +10,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_type/df_type.dart';
+import 'package:df_safer_dart/df_safer_dart.dart';
 import '/df_gen_core.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -20,9 +20,10 @@ final class MdTemplateUtility {
 
   const MdTemplateUtility._();
 
-  Future<Result<String, Object>> readTemplateFromPathOrUrl(String templatePathOrUrl) async {
-    final result = await FileSystemUtility.i.readFileFromPathOrUrl(templatePathOrUrl);
-    return result.map((e) => extractCodeFromMarkdown(e));
+  Async<String> readTemplateFromPathOrUrl(String templatePathOrUrl) {
+    return FileSystemUtility.i
+        .readFileFromPathOrUrl(templatePathOrUrl)
+        .map((e) => extractCodeFromMarkdown(e));
   }
 
   /// Extracts all code for the language [langCode] from some Markdown [content].

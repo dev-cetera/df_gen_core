@@ -1,7 +1,7 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by DevCetra.com & contributors. The use of this
+// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
 // source code is governed by an MIT-style license described in the LICENSE
 // file located in this project's root directory.
 //
@@ -15,7 +15,7 @@ import 'dart:convert' show utf8;
 import 'dart:io' show Directory, File, FileMode, Platform;
 import 'dart:isolate' show Isolate;
 
-import 'package:df_type/df_type.dart';
+import 'package:df_safer_dart/df_safer_dart.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
@@ -76,11 +76,10 @@ final class FileSystemUtility {
   }
 
   /// Reads the contents of a file located at [pathOrUrl].
-  Future<Result<String, Object>> readFileFromPathOrUrl(String pathOrUrl) async {
-    return Result.tryCatchAsync(
-      () async => (await readLocalFileOrNull(pathOrUrl) ?? await readFileFromUrlOrNull(pathOrUrl))!,
-      (e) => e,
-    );
+  Async<String> readFileFromPathOrUrl(String pathOrUrl) {
+    return Async.unsafe(() async {
+      return (await readLocalFileOrNull(pathOrUrl) ?? await readFileFromUrlOrNull(pathOrUrl))!;
+    });
   }
 
   /// Writes the given [content] to the file located at [filePath]. Set [append]

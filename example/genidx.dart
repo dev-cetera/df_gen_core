@@ -1,7 +1,7 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by DevCetra.com & contributors. The use of this
+// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
 // source code is governed by an MIT-style license described in the LICENSE
 // file located in this project's root directory.
 //
@@ -24,7 +24,7 @@ void main(List<String> args) {
 
 // [STEP 1] Define some constants to hold default argument values:
 const _DEFAULT_TEMPLATE_PATH_OR_URL =
-    'https://raw.githubusercontent.com/robmllze/df_generate_dart_indexes/main/templates/template.dart.md';
+    'https://raw.githubusercontent.com/dev-cetera/df_generate_dart_indexes/main/templates/template.dart.md';
 const _DEFAULT_OUTPUT_PATH = '{folder}.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -113,10 +113,14 @@ void app(List<String> args) async {
   };
 
   // [STEP 9] Read the template file.
-  final result = await MdTemplateUtility.i.readTemplateFromPathOrUrl(
-    templatePathOrUrl,
-  );
-  if (result.isErr) {
+  final result = (await MdTemplateUtility.i
+          .readTemplateFromPathOrUrl(
+            templatePathOrUrl,
+          )
+          .toSync())
+      // ignore: invalid_use_of_visible_for_testing_member
+      .value;
+  if (result.isErr()) {
     printYellow('Failed to read template at: $templatePathOrUrl');
     exit(ExitCodes.FAILURE.code);
   }
@@ -151,8 +155,9 @@ String _publicExports(
 }
 
 bool _isAllowedFileName(String e) {
-  return !e.startsWith('_') &&
-      !e.contains('${p.separator}_') &&
-      !e.endsWith('.g.dart') &&
-      e.endsWith('.dart');
+  final lc = e.toLowerCase();
+  return !lc.startsWith('_') &&
+      !lc.contains('${p.separator}_') &&
+      !lc.endsWith('.g.dart') &&
+      lc.endsWith('.dart');
 }
