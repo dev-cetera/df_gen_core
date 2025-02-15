@@ -40,7 +40,9 @@ String buildCollectionMapper(
       .._type = element[1];
     final argIdMatch = RegExp(r'#x(\d+)').firstMatch(output);
     collectionEvent._nameIndex =
-        argIdMatch != null && argIdMatch.groupCount > 0 //
+        argIdMatch != null &&
+                argIdMatch.groupCount >
+                    0 //
             ? int.tryParse(argIdMatch.group(1)!)
             : null;
     final xHash = '#x${collectionEvent._nameIndex}';
@@ -52,9 +54,10 @@ String buildCollectionMapper(
     }
     // Loop through object types.
     for (var n = 0; n < pLength; n++) {
-      final objectEvent = ObjectMapperEvent()
-        .._nameIndex = n
-        .._type = collectionEvent._ltypes.elementAt(n);
+      final objectEvent =
+          ObjectMapperEvent()
+            .._nameIndex = n
+            .._type = collectionEvent._ltypes.elementAt(n);
       final pHash = '#p$n';
 
       // If the object type is the next type data element.
@@ -89,14 +92,11 @@ final class ObjectMapperEvent extends MapperEvent {
   }
 }
 
-String? buildObjectMapper(
-  String type,
-  String fieldName,
-  TTypeMappers mappers,
-) {
-  final event = ObjectMapperEvent()
-    .._type = type
-    .._name = fieldName;
+String? buildObjectMapper(String type, String fieldName, TTypeMappers mappers) {
+  final event =
+      ObjectMapperEvent()
+        .._type = type
+        .._name = fieldName;
   return _buildMapper(event, mappers);
 }
 
@@ -124,17 +124,11 @@ abstract base class MapperEvent {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-String? _buildMapper(
-  MapperEvent event,
-  TTypeMappers mappers,
-) {
+String? _buildMapper(MapperEvent event, TTypeMappers mappers) {
   final type = event.type;
   if (type != null) {
     // Get all mappers that match the type.
-    final results = filterMappersByType(
-      mappers,
-      type,
-    );
+    final results = filterMappersByType(mappers, type);
     assert(results.isNotEmpty);
     // If there are any matches, take the first one.
     if (results.isNotEmpty) {
@@ -142,8 +136,10 @@ String? _buildMapper(
       final typePattern = result.key;
       final match = RegExp(typePattern).firstMatch(type);
       if (match != null) {
-        event._matchGroups =
-            Iterable.generate(match.groupCount + 1, (i) => match.group(i)!);
+        event._matchGroups = Iterable.generate(
+          match.groupCount + 1,
+          (i) => match.group(i)!,
+        );
         final eventMapper = result.value;
         return eventMapper(event);
       }
@@ -155,10 +151,7 @@ String? _buildMapper(
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// Searches [mappers] for mappers that match the given [type] and returns them.
-TTypeMappers filterMappersByType(
-  TTypeMappers mappers,
-  String type,
-) {
+TTypeMappers filterMappersByType(TTypeMappers mappers, String type) {
   return Map.fromEntries(
     mappers.entries.where((e) {
       final key = e.key;
@@ -169,20 +162,17 @@ TTypeMappers filterMappersByType(
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TTypeMappers<E extends MapperEvent>
-    = Map<String, String Function(E event)>;
+typedef TTypeMappers<E extends MapperEvent> =
+    Map<String, String Function(E event)>;
 
 TTypeMappers<T> newTypeMap<T extends MapperEvent>(
   Map<String, String Function(T)> src,
 ) {
   return TTypeMappers<MapperEvent>.unmodifiable(
     src.map(
-      (key, value) => MapEntry(
-        key,
-        (MapperEvent event) {
-          return value(event as T);
-        },
-      ),
+      (key, value) => MapEntry(key, (MapperEvent event) {
+        return value(event as T);
+      }),
     ),
   );
 }

@@ -33,23 +33,17 @@ class PathExplorer {
   //
   //
 
-  factory PathExplorer(
-    String inputPath,
-  ) {
+  factory PathExplorer(String inputPath) {
     return PathExplorer.combinations(
       combinations: {
-        GetPathCombinations(
-          [
-            {inputPath},
-          ],
-        ),
+        GetPathCombinations([
+          {inputPath},
+        ]),
       },
     );
   }
 
-  const PathExplorer.combinations({
-    required this.combinations,
-  });
+  const PathExplorer.combinations({required this.combinations});
 
   //
   //
@@ -79,12 +73,14 @@ class PathExplorer {
           final s = recurse(path, () => temp!);
           temp = DirPathExplorerFinding._(
             path: path,
-            files: s
-                .where((e) => e is FilePathExplorerFinding)
-                .cast<FilePathExplorerFinding>(),
-            dirs: s
-                .where((e) => e is DirPathExplorerFinding)
-                .cast<DirPathExplorerFinding>(),
+            files:
+                s
+                    .where((e) => e is FilePathExplorerFinding)
+                    .cast<FilePathExplorerFinding>(),
+            dirs:
+                s
+                    .where((e) => e is DirPathExplorerFinding)
+                    .cast<DirPathExplorerFinding>(),
             parentDir: parentDir,
           );
           yield temp;
@@ -106,7 +102,9 @@ class PathExplorer {
   }
 
   Stream<FileData> readFiles(bool Function(FilePathExplorerFinding) filter) {
-    return exploreFiles().where(filter).asyncMap(
+    return exploreFiles()
+        .where(filter)
+        .asyncMap(
           (a) async => File(a.path).readAsBytes().then((b) => FileData(a, b)),
         );
   }
@@ -140,12 +138,14 @@ class PathExplorer {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TPathExplorerFindings = Future<
-    ({
-      Set<DirPathExplorerFinding> rootDirPathFindings,
-      Set<DirPathExplorerFinding> dirPathFindings,
-      Set<FilePathExplorerFinding> filePathFindings,
-    })>;
+typedef TPathExplorerFindings =
+    Future<
+      ({
+        Set<DirPathExplorerFinding> rootDirPathFindings,
+        Set<DirPathExplorerFinding> dirPathFindings,
+        Set<FilePathExplorerFinding> filePathFindings,
+      })
+    >;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -161,10 +161,7 @@ final class FileReadFinding extends Equatable {
   //
   //
 
-  const FileReadFinding._({
-    required this.path,
-    required this.content,
-  });
+  const FileReadFinding._({required this.path, required this.content});
 
   //
   //
@@ -201,9 +198,7 @@ final class FilePathExplorerFinding extends PathExplorerFinding {
   //
   //
 
-  const FilePathExplorerFinding._({
-    required super.path,
-  });
+  const FilePathExplorerFinding._({required super.path});
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -262,9 +257,7 @@ sealed class PathExplorerFinding {
   //
   //
 
-  const PathExplorerFinding({
-    required this.path,
-  });
+  const PathExplorerFinding({required this.path});
 }
 
 //
@@ -272,9 +265,7 @@ sealed class PathExplorerFinding {
 //
 
 /// Lists all contents of the given [dirPath].
-Stream<String> _normalizedDirContent(
-  String dirPath,
-) async* {
+Stream<String> _normalizedDirContent(String dirPath) async* {
   final dirPathUri = Uri.parse(dirPath);
   final dir = Directory.fromUri(dirPathUri);
   yield* dir.list(recursive: false).map((e) => p.normalize(e.path));

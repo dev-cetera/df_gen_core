@@ -27,10 +27,7 @@ final class MdTemplateUtility {
   }
 
   /// Extracts all code for the language [langCode] from some Markdown [content].
-  String extractCodeFromMarkdown(
-    String content, {
-    String? langCode,
-  }) {
+  String extractCodeFromMarkdown(String content, {String? langCode}) {
     final snippets = extractCodeSnippetsFromMarkdown(
       content,
       langCode: langCode,
@@ -44,8 +41,10 @@ final class MdTemplateUtility {
     String content, {
     String? langCode,
   }) {
-    final dartCodeRegex =
-        RegExp('```(${langCode ?? '[^\\n]*'})\\n(.*?)```', dotAll: true);
+    final dartCodeRegex = RegExp(
+      '```(${langCode ?? '[^\\n]*'})\\n(.*?)```',
+      dotAll: true,
+    );
     final matches = dartCodeRegex.allMatches(content);
     final snippets = matches.map((e) => e.group(2)?.trim() ?? '').toList();
     return snippets;

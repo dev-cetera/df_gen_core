@@ -51,10 +51,7 @@ class Spinner {
     }
   }
 
-  void printAndResume(
-    void Function(String message) print,
-    String message,
-  ) {
+  void printAndResume(void Function(String message) print, String message) {
     this.stop();
     print('[$label] $message');
     this.start();

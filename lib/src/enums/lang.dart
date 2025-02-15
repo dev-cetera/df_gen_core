@@ -40,9 +40,7 @@ enum Lang {
   /// The file extension name most commonly associated with the language.
   final String code;
 
-  const Lang({
-    required this.code,
-  });
+  const Lang({required this.code});
 
   /// The file extension associated with the language, e.g. '.dart'.
   String get ext => '.$code';
@@ -89,8 +87,10 @@ enum Lang {
     final baseName = p.basename(localSystemFilePath);
     final valid = isValidGenFilePath(localSystemFilePath);
     if (valid) {
-      final baseNameNoExt =
-          baseName.substring(0, baseName.length - genExt.length);
+      final baseNameNoExt = baseName.substring(
+        0,
+        baseName.length - genExt.length,
+      );
       final srcBaseName = '$baseNameNoExt$ext';
       final result = p.join(dirName, srcBaseName);
       return result;

@@ -22,10 +22,7 @@ class Intersection<TInsight> {
   //
   //
 
-  const Intersection({
-    required this.insight,
-    required this.replacements,
-  });
+  const Intersection({required this.insight, required this.replacements});
 
   //
   //
@@ -37,10 +34,8 @@ class Intersection<TInsight> {
     Map<String, dynamic> staticReplacements,
   ) {
     return insights.map(
-      (insight) => Intersection(
-        insight: insight,
-        replacements: staticReplacements,
-      ),
+      (insight) =>
+          Intersection(insight: insight, replacements: staticReplacements),
     );
   }
 
@@ -63,10 +58,7 @@ class Intersection<TInsight> {
     Map<String, dynamic> staticReplacements,
   ) sync* {
     for (var insight in insights) {
-      yield Intersection<T>(
-        insight: insight,
-        replacements: staticReplacements,
-      );
+      yield Intersection<T>(insight: insight, replacements: staticReplacements);
     }
   }
 

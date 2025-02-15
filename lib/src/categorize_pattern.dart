@@ -22,10 +22,7 @@ final class CategorizedPattern<T> {
   //
   //
 
-  const CategorizedPattern({
-    required this.pattern,
-    this.category,
-  });
+  const CategorizedPattern({required this.pattern, this.category});
 
   //
   //
@@ -84,10 +81,7 @@ final class CategorizedPattern<T> {
     return true;
   }
 
-  static bool doesMatch<T>(
-    String value,
-    CategorizedPattern<T> pattern,
-  ) {
+  static bool doesMatch<T>(String value, CategorizedPattern<T> pattern) {
     final expression = RegExp(pattern.pattern, caseSensitive: false);
     return expression.hasMatch(value);
   }
@@ -101,6 +95,4 @@ final class CategorizedPattern<T> {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-enum _DefaulT {
-  DEFAULT,
-}
+enum _DefaulT { DEFAULT }

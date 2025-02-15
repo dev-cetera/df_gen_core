@@ -22,8 +22,5 @@ class InsightMapper<TInsight, TPlaceholder> {
   //
   //
 
-  const InsightMapper({
-    required this.placeholder,
-    required this.mapInsights,
-  });
+  const InsightMapper({required this.placeholder, required this.mapInsights});
 }

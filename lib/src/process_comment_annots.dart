@@ -40,8 +40,9 @@ Future<void> processCommentAnnots({
 
   // Strip strings per ignorePattern from annotationHandlers.
   String $strip(String e) => e.replaceAll(ignoreExp, '').toLowerCase();
-  final onAnnotCallbacks1 =
-      onAnnotCallbacks.map((k, v) => MapEntry($strip(k), v));
+  final onAnnotCallbacks1 = onAnnotCallbacks.map(
+    (k, v) => MapEntry($strip(k), v),
+  );
 
   final annots = <int, String>{};
 
@@ -61,8 +62,11 @@ Future<void> processCommentAnnots({
     annots[lineNumber] = annot1;
 
     // Process the annot.
-    final proceed =
-        await onAnnotCallbacks1[annot1]!(lineNumber, lines, filePath);
+    final proceed = await onAnnotCallbacks1[annot1]!(
+      lineNumber,
+      lines,
+      filePath,
+    );
 
     // Break the loop if the callback returns false.
     if (!proceed) {
@@ -87,8 +91,5 @@ Future<void> processCommentAnnots({
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TLineCallback = Future<bool> Function(
-  int lineNumber,
-  List<String> lines,
-  String filePath,
-);
+typedef TLineCallback =
+    Future<bool> Function(int lineNumber, List<String> lines, String filePath);

@@ -190,10 +190,7 @@ Set<String> combinePathSets(List<Set<String>> pathSets) {
         }
       }
     }
-    output = combinePathSets([
-      joined,
-      ...input.skip(2),
-    ]);
+    output = combinePathSets([joined, ...input.skip(2)]);
   }
   output = output.map((e) => p.normalize(PathUtility.i.localize(e))).toSet();
   return output;

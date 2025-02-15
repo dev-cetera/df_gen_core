@@ -25,7 +25,5 @@ class DirInsight {
   //
   //
 
-  const DirInsight({
-    required this.dir,
-  });
+  const DirInsight({required this.dir});
 }

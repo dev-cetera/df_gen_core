@@ -22,10 +22,7 @@ class TemplateInterpolator<T> {
   String interpolate(String template, T insight) {
     return template.replaceData(
       map.map((k, v) {
-        return MapEntry(
-          k,
-          v(insight),
-        );
+        return MapEntry(k, v(insight));
       }),
     );
   }
@@ -36,16 +33,16 @@ class TemplateInterpolator<T> {
     String separator = '\n',
   }) {
     return template.replaceData(
-      map.map(
-        (k, v) {
-          return MapEntry(
-            k,
-            insights.map((e) {
-              return v(e);
-            }).join(separator),
-          );
-        },
-      ),
+      map.map((k, v) {
+        return MapEntry(
+          k,
+          insights
+              .map((e) {
+                return v(e);
+              })
+              .join(separator),
+        );
+      }),
     );
   }
 }

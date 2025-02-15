@@ -79,10 +79,7 @@ void app(List<String> args) async {
   outputFilePath = outputFilePath.replaceAll(
     '{folder}',
     PathUtility.i.folderName(
-      p.join(
-        FileSystemUtility.i.currentScriptDir,
-        outputFilePath,
-      ),
+      p.join(FileSystemUtility.i.currentScriptDir, outputFilePath),
     ),
   );
   // If the output file path is relative, then make it relative to the current
@@ -97,8 +94,9 @@ void app(List<String> args) async {
   // [STEP 7] Create a stream to get all files ending in .dart but not in
   // .g.dart and do not start with underscores.
   final filePathStream0 = PathExplorer(inputPath).exploreFiles();
-  final filePathStream1 =
-      filePathStream0.where((e) => _isAllowedFileName(e.path));
+  final filePathStream1 = filePathStream0.where(
+    (e) => _isAllowedFileName(e.path),
+  );
 
   // [STEP 8] Create a replacement map for the template, to replace
   // placeholders in the template with the actual values. We also want to skip
@@ -115,13 +113,12 @@ void app(List<String> args) async {
   };
 
   // [STEP 9] Read the template file.
-  final result = (await MdTemplateUtility.i
-          .readTemplateFromPathOrUrl(
-            templatePathOrUrl,
-          )
-          .toSync())
-      // ignore: invalid_use_of_visible_for_testing_member
-      .value;
+  final result =
+      (await MdTemplateUtility.i
+              .readTemplateFromPathOrUrl(templatePathOrUrl)
+              .toSync())
+          // ignore: invalid_use_of_visible_for_testing_member
+          .value;
   if (result.isErr()) {
     printYellow('Failed to read template at: $templatePathOrUrl');
     exit(ExitCodes.FAILURE.code);
@@ -150,8 +147,9 @@ String _publicExports(
   bool Function(String filePath) test,
   String Function(String baseName) statementBuilder,
 ) {
-  final relativeFilePaths =
-      filePaths.map((e) => p.relative(e, from: inputPath));
+  final relativeFilePaths = filePaths.map(
+    (e) => p.relative(e, from: inputPath),
+  );
   final exportFilePaths = relativeFilePaths.where((e) => test(e));
   final statements = exportFilePaths.map(statementBuilder);
   return statements.join('\n');

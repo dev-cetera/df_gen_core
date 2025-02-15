@@ -78,18 +78,16 @@ final class DartAnnotatedClassAnalyzer {
     final fullFilePath = p.normalize(p.absolute(filePath));
     final fullFileUri = Uri.file(fullFilePath);
     final context = analysisContextCollection.contextFor(fullFilePath);
-    final library =
-        await context.currentSession.getLibraryByUri(fullFileUri.toString());
+    final library = await context.currentSession.getLibraryByUri(
+      fullFileUri.toString(),
+    );
     if (library is LibraryElementResult) {
       final classElements =
           library.element.topLevelElements.whereType<ClassElement>();
       for (final classElement in classElements) {
         final className = classElement.displayName;
         if (classNameFilter == null || classNameFilter.hasMatch(className)) {
-          onPreAnalysis?.call(
-            fullFilePath,
-            className,
-          );
+          onPreAnalysis?.call(fullFilePath, className);
           await _processMemberAnnotations(
             fullFilePath,
             classElement,
@@ -147,18 +145,20 @@ final class DartAnnotatedClassAnalyzer {
           if (memberAnnotationName != null &&
               inclMemberAnnotations?.contains(memberAnnotationName) != false) {
             final fieldElements = fieldMetadata.element;
-            final fieldNames =
-                fieldElements?.children.map((e) => e.displayName);
+            final fieldNames = fieldElements?.children.map(
+              (e) => e.displayName,
+            );
             var memberAnnotationFields = <String, DartObject>{};
             if (fieldNames != null) {
-              memberAnnotationFields = Map.fromEntries(
-                fieldNames.map((e) {
-                  return MapEntry(
-                    e,
-                    fieldMetadata.computeConstantValue()?.getField(e),
-                  );
-                }),
-              ).nonNulls;
+              memberAnnotationFields =
+                  Map.fromEntries(
+                    fieldNames.map((e) {
+                      return MapEntry(
+                        e,
+                        fieldMetadata.computeConstantValue()?.getField(e),
+                      );
+                    }),
+                  ).nonNulls;
             }
             final parent = OnAnnotatedMemberParams(
               fullFilePath: fullFilePath,
@@ -187,9 +187,9 @@ final class DartAnnotatedClassAnalyzer {
     }
   }
 
-//
-//
-//
+  //
+  //
+  //
 
   Future<void> _processMethodAnnotations(
     String fullFilePath,
@@ -267,8 +267,9 @@ final class DartAnnotatedClassAnalyzer {
           final fieldNames = element?.children.map((e) => e.displayName);
           if (fieldNames != null) {
             for (final fieldName in fieldNames) {
-              final fieldValue =
-                  metadata.computeConstantValue()?.getField(fieldName);
+              final fieldValue = metadata.computeConstantValue()?.getField(
+                fieldName,
+              );
               if (fieldValue != null) {
                 await onClassAnnotationField(
                   OnClassAnnotationFieldParams(
@@ -303,9 +304,8 @@ final class OnAnnotatedClassParams {
   });
 }
 
-typedef TOnAnnotatedClassCallback = Future<dynamic> Function(
-  OnAnnotatedClassParams parent,
-);
+typedef TOnAnnotatedClassCallback =
+    Future<dynamic> Function(OnAnnotatedClassParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -326,9 +326,8 @@ final class OnClassAnnotationFieldParams {
   });
 }
 
-typedef TOnClassAnnotationFieldCallback = Future<dynamic> Function(
-  OnClassAnnotationFieldParams parent,
-);
+typedef TOnClassAnnotationFieldCallback =
+    Future<dynamic> Function(OnClassAnnotationFieldParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -347,9 +346,8 @@ final class OnAnnotatedMethodParams {
   });
 }
 
-typedef TOnAnnotatedMethodCallback = Future<dynamic> Function(
-  OnAnnotatedMethodParams parent,
-);
+typedef TOnAnnotatedMethodCallback =
+    Future<dynamic> Function(OnAnnotatedMethodParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -370,9 +368,8 @@ final class OnMethodAnnotationFieldParams {
   });
 }
 
-typedef TOnMethodAnnotationFieldCallback = Future<dynamic> Function(
-  OnMethodAnnotationFieldParams parent,
-);
+typedef TOnMethodAnnotationFieldCallback =
+    Future<dynamic> Function(OnMethodAnnotationFieldParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -393,9 +390,8 @@ final class OnAnnotatedMemberParams {
   });
 }
 
-typedef TOnAnnotatedMemberCallback = Future<dynamic> Function(
-  OnAnnotatedMemberParams parent,
-);
+typedef TOnAnnotatedMemberCallback =
+    Future<dynamic> Function(OnAnnotatedMemberParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -416,9 +412,8 @@ final class OnMemberAnnotationFieldParams {
   });
 }
 
-typedef TOnMemberAnnotationFieldsCallback = Future<dynamic> Function(
-  OnMemberAnnotationFieldParams parent,
-);
+typedef TOnMemberAnnotationFieldsCallback =
+    Future<dynamic> Function(OnMemberAnnotationFieldParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 

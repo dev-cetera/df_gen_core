@@ -25,9 +25,7 @@ class FileInsight {
   //
   //
 
-  const FileInsight({
-    required this.filePathFinding,
-  });
+  const FileInsight({required this.filePathFinding});
 }
 
 sealed class PerIntersection<T> {

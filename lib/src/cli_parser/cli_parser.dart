@@ -39,10 +39,7 @@ final class CliParser {
     final argParser = ArgParser();
     addParamsTo(argParser);
     final argResults = argParser.parse(args);
-    return (
-      argResults,
-      argParser,
-    );
+    return (argResults, argParser);
   }
 
   String getInfo(ArgParser argParser) {
@@ -304,12 +301,7 @@ final class MultiOption extends Param {
 
 enum DefaultFlags {
   HELP(
-    Flag(
-      name: 'help',
-      abbr: 'h',
-      help: 'Help information.',
-      defaultsTo: false,
-    ),
+    Flag(name: 'help', abbr: 'h', help: 'Help information.', defaultsTo: false),
   );
 
   final Flag flag;
@@ -331,33 +323,13 @@ enum DefaultOptions {
           'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
     ),
   ),
-  INPUT_PATH(
-    Option(
-      name: 'input',
-      abbr: 'i',
-      help: 'Source input path.',
-    ),
-  ),
-  OUTPUT_PATH(
-    Option(
-      name: 'output',
-      abbr: 'o',
-      help: 'Output path.',
-    ),
-  ),
+  INPUT_PATH(Option(name: 'input', abbr: 'i', help: 'Source input path.')),
+  OUTPUT_PATH(Option(name: 'output', abbr: 'o', help: 'Output path.')),
   GENERATED_OUTPUT(
-    Option(
-      name: 'output',
-      abbr: 'o',
-      help: 'Generated output path.',
-    ),
+    Option(name: 'output', abbr: 'o', help: 'Generated output path.'),
   ),
   TEMPLATE_PATH_OR_URL(
-    Option(
-      name: 'template',
-      abbr: 't',
-      help: 'Source template path or URL.',
-    ),
+    Option(name: 'template', abbr: 't', help: 'Source template path or URL.'),
   );
 
   final Option option;
