@@ -12,9 +12,11 @@
 
 name: df_gen_core
 description: A package that provides core utilities for practical code generation.
-version: 0.6.4
+version: 0.6.5
 homepage: https://dev-cetera.com/
 repository: https://github.com/robmllze/df_gen_core
+funding:
+  - https://www.buymeacoffee.com/dev_cetera
 
 ## -----------------------------------------------------------------------------
 
@@ -30,7 +32,6 @@ dependencies:
   df_safer_dart: ^0.10.0
   df_string: ^0.2.4
   df_type: ^0.10.3
-
   analyzer: ^6.11.0
   args: ^2.6.0
   collection: ^1.19.1
