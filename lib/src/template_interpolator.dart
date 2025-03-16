@@ -10,7 +10,9 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import 'package:df_config/df_config.dart';
+// ignore_for_file: invalid_use_of_internal_member, implementation_imports
+
+import 'package:df_config/src/_etc/replace_data.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -36,11 +38,9 @@ class TemplateInterpolator<T> {
       map.map((k, v) {
         return MapEntry(
           k,
-          insights
-              .map((e) {
-                return v(e);
-              })
-              .join(separator),
+          insights.map((e) {
+            return v(e);
+          }).join(separator),
         );
       }),
     );
