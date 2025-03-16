@@ -38,9 +38,11 @@ class TemplateInterpolator<T> {
       map.map((k, v) {
         return MapEntry(
           k,
-          insights.map((e) {
-            return v(e);
-          }).join(separator),
+          insights
+              .map((e) {
+                return v(e);
+              })
+              .join(separator),
         );
       }),
     );
