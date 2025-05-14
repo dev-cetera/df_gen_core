@@ -21,7 +21,7 @@ Future<void> fmtRustFile(String filePath) async {
   try {
     await Process.run('rustfmt', [filePath]);
   } catch (_) {
-    printRed('Error formatting Rust file at $filePath');
+    Glog.printRed('Error formatting Rust file at $filePath');
   }
 }
 
@@ -31,6 +31,6 @@ Future<void> fixRustFile(String filePath) async {
   try {
     await Process.run('cargo', ['fix', filePath]);
   } catch (_) {
-    printRed('Error fixing Rust file at $filePath');
+    Glog.printRed('Error fixing Rust file at $filePath');
   }
 }

@@ -22,7 +22,7 @@ Future<void> fmtTsJsFile(String filePath) async {
   try {
     await Process.run('prettier', ['--write', filePath]);
   } catch (_) {
-    printRed('Error formatting TypeScript/JavaScript file at $filePath');
+    Glog.printRed('Error formatting TypeScript/JavaScript file at $filePath');
   }
 }
 
@@ -32,6 +32,6 @@ Future<void> fixTsJsFile(String filePath) async {
   try {
     await Process.run('eslint', ['--fix', filePath]);
   } catch (_) {
-    printRed('Error fixing TypeScript/JavaScript file at $filePath');
+    Glog.printRed('Error fixing TypeScript/JavaScript file at $filePath');
   }
 }
