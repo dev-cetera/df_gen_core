@@ -73,14 +73,12 @@ class PathExplorer {
           final s = recurse(path, () => temp!);
           temp = DirPathExplorerFinding._(
             path: path,
-            files:
-                s
-                    .where((e) => e is FilePathExplorerFinding)
-                    .cast<FilePathExplorerFinding>(),
-            dirs:
-                s
-                    .where((e) => e is DirPathExplorerFinding)
-                    .cast<DirPathExplorerFinding>(),
+            files: s
+                .where((e) => e is FilePathExplorerFinding)
+                .cast<FilePathExplorerFinding>(),
+            dirs: s
+                .where((e) => e is DirPathExplorerFinding)
+                .cast<DirPathExplorerFinding>(),
             parentDir: parentDir,
           );
           yield temp;

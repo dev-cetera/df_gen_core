@@ -82,8 +82,8 @@ final class DartAnnotatedClassAnalyzer {
       fullFileUri.toString(),
     );
     if (library is LibraryElementResult) {
-      final classElements =
-          library.element.topLevelElements.whereType<ClassElement>();
+      final classElements = library.element.topLevelElements
+          .whereType<ClassElement>();
       for (final classElement in classElements) {
         final className = classElement.displayName;
         if (classNameFilter == null || classNameFilter.hasMatch(className)) {
@@ -150,15 +150,14 @@ final class DartAnnotatedClassAnalyzer {
             );
             var memberAnnotationFields = <String, DartObject>{};
             if (fieldNames != null) {
-              memberAnnotationFields =
-                  Map.fromEntries(
-                    fieldNames.map((e) {
-                      return MapEntry(
-                        e,
-                        fieldMetadata.computeConstantValue()?.getField(e),
-                      );
-                    }),
-                  ).nonNulls;
+              memberAnnotationFields = Map.fromEntries(
+                fieldNames.map((e) {
+                  return MapEntry(
+                    e,
+                    fieldMetadata.computeConstantValue()?.getField(e),
+                  );
+                }),
+              ).nonNulls;
             }
             final parent = OnAnnotatedMemberParams(
               fullFilePath: fullFilePath,

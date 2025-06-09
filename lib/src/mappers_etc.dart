@@ -41,10 +41,10 @@ String buildCollectionMapper(
     final argIdMatch = RegExp(r'#x(\d+)').firstMatch(output);
     collectionEvent._nameIndex =
         argIdMatch != null &&
-                argIdMatch.groupCount >
-                    0 //
-            ? int.tryParse(argIdMatch.group(1)!)
-            : null;
+            argIdMatch.groupCount >
+                0 //
+        ? int.tryParse(argIdMatch.group(1)!)
+        : null;
     final xHash = '#x${collectionEvent._nameIndex}';
     final formula = _buildMapper(collectionEvent, mappers);
     if (formula != null) {
@@ -54,10 +54,9 @@ String buildCollectionMapper(
     }
     // Loop through object types.
     for (var n = 0; n < pLength; n++) {
-      final objectEvent =
-          ObjectMapperEvent()
-            .._nameIndex = n
-            .._type = collectionEvent._ltypes.elementAt(n);
+      final objectEvent = ObjectMapperEvent()
+        .._nameIndex = n
+        .._type = collectionEvent._ltypes.elementAt(n);
       final pHash = '#p$n';
 
       // If the object type is the next type data element.
@@ -93,10 +92,9 @@ final class ObjectMapperEvent extends MapperEvent {
 }
 
 String? buildObjectMapper(String type, String fieldName, TTypeMappers mappers) {
-  final event =
-      ObjectMapperEvent()
-        .._type = type
-        .._name = fieldName;
+  final event = ObjectMapperEvent()
+    .._type = type
+    .._name = fieldName;
   return _buildMapper(event, mappers);
 }
 
