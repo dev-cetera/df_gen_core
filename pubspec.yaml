@@ -29,6 +29,7 @@ dependencies:
   df_collection: ^0.9.1
   df_config: ^0.7.1
   df_log: ^0.3.10
+  df_safer_dart: ^0.13.1
   df_string: ^0.2.4
   df_type: ^0.10.4
   analyzer: ^6.11.0
