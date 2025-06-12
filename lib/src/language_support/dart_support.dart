@@ -24,7 +24,7 @@ Future<void> fmtDartFile(String filePath) async {
   try {
     await Process.run('dart', ['format', filePath]);
   } catch (_) {
-    Glog.printRed('Error formatting Dart file at $filePath');
+    Log.printRed('Error formatting Dart file at $filePath');
   }
 }
 
@@ -33,7 +33,7 @@ Future<void> fixDartFile(String filePath) async {
   try {
     await Process.run('dart', ['fix', '--apply', filePath]);
   } catch (_) {
-    Glog.printRed('Error fixing Dart file at $filePath');
+    Log.printRed('Error fixing Dart file at $filePath');
   }
 }
 
@@ -49,10 +49,7 @@ AnalysisContextCollection createDartAnalysisContextCollection(
   String? fallbackDartSdkPath,
 ) {
   final sdkPath = Platform.environment['DART_SDK'] ?? fallbackDartSdkPath;
-  final includePaths = paths
-      .toSet()
-      .map((e) => p.normalize(p.absolute(e)))
-      .toList();
+  final includePaths = paths.toSet().map((e) => p.normalize(p.absolute(e))).toList();
   final collection = AnalysisContextCollection(
     includedPaths: includePaths,
     resourceProvider: PhysicalResourceProvider.INSTANCE,
