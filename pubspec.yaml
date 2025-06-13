@@ -37,7 +37,7 @@ dependencies:
   collection: ^1.19.1
   equatable: ^2.0.7
   http: ^1.4.0
-  meta: ^1.17.0
+  meta: ^1.16.0
   path: ^1.9.1
   source_gen: ^1.5.0
 
