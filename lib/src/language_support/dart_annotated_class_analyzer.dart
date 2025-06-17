@@ -209,7 +209,7 @@ final class DartAnnotatedClassAnalyzer {
               fullFilePath: fullFilePath,
               methodAnnotationName: methodAnnotationName,
               methodName: method.displayName,
-              methodType: method.type.getDisplayString(),
+              methodType: method.type.getDisplayString(withNullability: false),
             );
             final stick = await onAnnotatedMethod?.call(parent);
             if (onMethodAnnotationField != null) {
