@@ -16,7 +16,7 @@ repository: https://github.com/dev-cetera/df_gen_core
 funding:
   - https://www.buymeacoffee.com/dev_cetera
 description: A package that provides core utilities for practical code generation.
-version: 0.6.12
+version: 0.6.13
 
 ## -----------------------------------------------------------------------------
 
