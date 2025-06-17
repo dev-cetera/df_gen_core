@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.6.13]
+
+- Released @ 6/2025 (UTC)
+- Critical bugfix
+
 ## [0.6.12]
 
 - Released @ 6/2025 (UTC)
