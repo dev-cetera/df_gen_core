@@ -16,10 +16,10 @@ final class CollectionMapperEvent extends MapperEvent {
   Iterable<String> _lhashes = [];
   Iterable<String> _lparams = [];
   Iterable<String> _ltypes = [];
-  String get args => this._largs.join(', ');
-  String get hashes => this._lhashes.join(', ');
-  String get params => this._lparams.join(', ');
-  String get types => this._ltypes.join(', ');
+  String get args => _largs.join(', ');
+  String get hashes => _lhashes.join(', ');
+  String get params => _lparams.join(', ');
+  String get types => _ltypes.join(', ');
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -39,10 +39,7 @@ String buildCollectionMapper(
       .._largs = Iterable.generate(pLength, (n) => n).map((n) => 'p$n')
       .._type = element[1];
     final argIdMatch = RegExp(r'#x(\d+)').firstMatch(output);
-    collectionEvent._nameIndex =
-        argIdMatch != null &&
-            argIdMatch.groupCount >
-                0 //
+    collectionEvent._nameIndex = argIdMatch != null && argIdMatch.groupCount > 0 //
         ? int.tryParse(argIdMatch.group(1)!)
         : null;
     final xHash = '#x${collectionEvent._nameIndex}';
@@ -86,8 +83,8 @@ final class ObjectMapperEvent extends MapperEvent {
   ObjectMapperEvent();
 
   ObjectMapperEvent.custom(String name, Iterable<String> matchGroups) {
-    this._name = name;
-    this._matchGroups = matchGroups;
+    _name = name;
+    _matchGroups = matchGroups;
   }
 }
 
@@ -103,20 +100,19 @@ String? buildObjectMapper(String type, String fieldName, TTypeMappers mappers) {
 /// Mapper event base class.
 abstract base class MapperEvent {
   /// The name of the field, e.g. "firstName" or "p3".
-  String? get name =>
-      this._name ?? (this._nameIndex != null ? 'p${this._nameIndex}' : null);
+  String? get name => _name ?? (_nameIndex != null ? 'p$_nameIndex' : null);
   String? _name;
 
   /// The index of the generated field name, e.g. "p3" = 3.
-  int? get nameIndex => this._nameIndex;
+  int? get nameIndex => _nameIndex;
   int? _nameIndex;
 
   /// The field type, e.g. "String?".
-  String? get type => this._type;
+  String? get type => _type;
   String? _type;
 
   /// Regex match groups.
-  Iterable<String>? get matchGroups => this._matchGroups;
+  Iterable<String>? get matchGroups => _matchGroups;
   Iterable<String>? _matchGroups;
 }
 
@@ -160,8 +156,7 @@ TTypeMappers filterMappersByType(TTypeMappers mappers, String type) {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TTypeMappers<E extends MapperEvent> =
-    Map<String, String Function(E event)>;
+typedef TTypeMappers<E extends MapperEvent> = Map<String, String Function(E event)>;
 
 TTypeMappers<T> newTypeMap<T extends MapperEvent>(
   Map<String, String Function(T)> src,
@@ -177,9 +172,8 @@ TTypeMappers<T> newTypeMap<T extends MapperEvent>(
 
 abstract class TypeMappers {
   TTypeMappers<MapperEvent> get fromMappers =>
-      {...this.collectionFromMappers, ...this.objectFromMappers}.cast();
-  TTypeMappers<MapperEvent> get toMappers =>
-      {...this.collectionToMappers, ...this.objectToMappers}.cast();
+      {...collectionFromMappers, ...objectFromMappers}.cast();
+  TTypeMappers<MapperEvent> get toMappers => {...collectionToMappers, ...objectToMappers}.cast();
   TTypeMappers<CollectionMapperEvent> get collectionFromMappers;
   TTypeMappers<CollectionMapperEvent> get collectionToMappers;
   TTypeMappers<ObjectMapperEvent> get objectFromMappers;

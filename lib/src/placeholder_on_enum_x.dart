@@ -11,5 +11,5 @@
 //.title~
 
 extension PlaceholderOnEnumX on Enum {
-  String get placeholder => '___${this.name}___';
+  String get placeholder => '___${name}___';
 }

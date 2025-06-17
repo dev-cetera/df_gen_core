@@ -50,15 +50,11 @@ class PathExplorer {
   //
 
   Stream<FilePathExplorerFinding> exploreFiles() {
-    return explore()
-        .where((e) => e is FilePathExplorerFinding)
-        .cast<FilePathExplorerFinding>();
+    return explore().where((e) => e is FilePathExplorerFinding).cast<FilePathExplorerFinding>();
   }
 
   Stream<DirPathExplorerFinding> exploreDirs() {
-    return explore()
-        .where((e) => e is DirPathExplorerFinding)
-        .cast<DirPathExplorerFinding>();
+    return explore().where((e) => e is DirPathExplorerFinding).cast<DirPathExplorerFinding>();
   }
 
   Stream<PathExplorerFinding> explore() async* {
@@ -73,12 +69,8 @@ class PathExplorer {
           final s = recurse(path, () => temp!);
           temp = DirPathExplorerFinding._(
             path: path,
-            files: s
-                .where((e) => e is FilePathExplorerFinding)
-                .cast<FilePathExplorerFinding>(),
-            dirs: s
-                .where((e) => e is DirPathExplorerFinding)
-                .cast<DirPathExplorerFinding>(),
+            files: s.where((e) => e is FilePathExplorerFinding).cast<FilePathExplorerFinding>(),
+            dirs: s.where((e) => e is DirPathExplorerFinding).cast<DirPathExplorerFinding>(),
             parentDir: parentDir,
           );
           yield temp;
@@ -100,9 +92,7 @@ class PathExplorer {
   }
 
   Stream<FileData> readFiles(bool Function(FilePathExplorerFinding) filter) {
-    return exploreFiles()
-        .where(filter)
-        .asyncMap(
+    return exploreFiles().where(filter).asyncMap(
           (a) async => File(a.path).readAsBytes().then((b) => FileData(a, b)),
         );
   }
@@ -136,14 +126,12 @@ class PathExplorer {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TPathExplorerFindings =
-    Future<
-      ({
-        Set<DirPathExplorerFinding> rootDirPathFindings,
-        Set<DirPathExplorerFinding> dirPathFindings,
-        Set<FilePathExplorerFinding> filePathFindings,
-      })
-    >;
+typedef TPathExplorerFindings = Future<
+    ({
+      Set<DirPathExplorerFinding> rootDirPathFindings,
+      Set<DirPathExplorerFinding> dirPathFindings,
+      Set<FilePathExplorerFinding> filePathFindings,
+    })>;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -165,20 +153,20 @@ final class FileReadFinding extends Equatable {
   //
   //
 
-  String get baseName => p.basename(this.path);
+  String get baseName => p.basename(path);
 
   //
   //
   //
 
-  String get rootName => this.baseName.replaceFirst(RegExp(r'\..*'), '');
+  String get rootName => baseName.replaceFirst(RegExp(r'\..*'), '');
 
   //
   //
   //
 
   @override
-  List<Object?> get props => [this.path, this.content];
+  List<Object?> get props => [path, content];
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
