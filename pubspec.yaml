@@ -16,7 +16,7 @@ repository: https://github.com/dev-cetera/df_gen_core
 funding:
   - https://www.buymeacoffee.com/dev_cetera
 description: A package that provides core utilities for practical code generation.
-version: 0.6.13
+version: 0.6.14
 
 ## -----------------------------------------------------------------------------
 
@@ -28,8 +28,8 @@ environment:
 dependencies:
   df_collection: ^0.9.3
   df_config: ^0.7.3
-  df_log: ^0.3.13
-  df_safer_dart: ^0.14.10
+  df_log: ^0.3.17
+  df_safer_dart: ^0.15.2
   df_string: ^0.2.5
   df_type: ^0.12.3
   analyzer: ^5.2.0
