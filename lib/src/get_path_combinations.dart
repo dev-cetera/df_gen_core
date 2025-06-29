@@ -49,7 +49,7 @@ class GetPathCombinations extends Equatable {
     List<Set<String>> pathSets,
     Set<String> pathPatterns,
   ) {
-    return powerset(pathSets, (a, b) => p.normalize(p.join(a, b)))
+    return cartesianProduct(pathSets, (a, b) => p.normalize(p.join(a, b)))
         .map((e) => matchesAnyPathPattern(e, pathPatterns) ? e : null)
         .whereType<String>()
         .toSet();
