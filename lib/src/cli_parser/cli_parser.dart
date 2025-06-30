@@ -89,8 +89,8 @@ sealed class Param {
   void add(ArgParser argParser);
 
   Flag get asFlag => this as Flag;
-  MultiOption get asMultiOption => this as MultiOption;
-  Option get asOption => this as Option;
+  MultiOptionParam get asMultiOption => this as MultiOptionParam;
+  OptionParam get asOption => this as OptionParam;
 
   @override
   bool operator ==(Object other) {
@@ -159,7 +159,7 @@ final class Flag extends Param {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-final class Option extends Param {
+final class OptionParam extends Param {
   final String? valueHelp;
   final Iterable<String>? allowed;
   final Map<String, String>? allowedHelp;
@@ -167,7 +167,7 @@ final class Option extends Param {
   final void Function(String?)? callback;
   final bool mandatory;
 
-  const Option({
+  const OptionParam({
     required super.name,
     super.abbr,
     super.help,
@@ -198,7 +198,7 @@ final class Option extends Param {
     );
   }
 
-  Option copyWith({
+  OptionParam copyWith({
     String? name,
     String? abbr,
     String? help,
@@ -211,7 +211,7 @@ final class Option extends Param {
     bool? hide,
     List<String>? aliases,
   }) {
-    return Option(
+    return OptionParam(
       name: name ?? this.name,
       abbr: abbr ?? this.abbr,
       help: help ?? this.help,
@@ -229,7 +229,7 @@ final class Option extends Param {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-final class MultiOption extends Param {
+final class MultiOptionParam extends Param {
   final String? valueHelp;
   final Iterable<String>? allowed;
   final Map<String, String>? allowedHelp;
@@ -237,7 +237,7 @@ final class MultiOption extends Param {
   final void Function(List<String>)? callback;
   final bool splitCommas;
 
-  const MultiOption({
+  const MultiOptionParam({
     required super.name,
     super.abbr,
     super.help,
@@ -268,7 +268,7 @@ final class MultiOption extends Param {
     );
   }
 
-  MultiOption copyWith({
+  MultiOptionParam copyWith({
     String? name,
     String? abbr,
     String? help,
@@ -281,7 +281,7 @@ final class MultiOption extends Param {
     bool? hide,
     List<String>? aliases,
   }) {
-    return MultiOption(
+    return MultiOptionParam(
       name: name ?? this.name,
       abbr: abbr ?? this.abbr,
       help: help ?? this.help,
@@ -315,25 +315,25 @@ enum DefaultFlags {
   }
 }
 
-enum DefaultOptions {
+enum DefaultOptionParams {
   DART_SDK(
-    Option(
+    OptionParam(
       name: 'dart-sdk',
       help:
           'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
     ),
   ),
-  INPUT_PATH(Option(name: 'input', abbr: 'i', help: 'Source input path.')),
-  OUTPUT_PATH(Option(name: 'output', abbr: 'o', help: 'Output path.')),
+  INPUT_PATH(OptionParam(name: 'input', abbr: 'i', help: 'Source input path.')),
+  OUTPUT_PATH(OptionParam(name: 'output', abbr: 'o', help: 'Output path.')),
   GENERATED_OUTPUT(
-    Option(name: 'output', abbr: 'o', help: 'Generated output path.'),
+    OptionParam(name: 'output', abbr: 'o', help: 'Generated output path.'),
   ),
   TEMPLATE_PATH_OR_URL(
-    Option(name: 'template', abbr: 't', help: 'Source template path or URL.'),
+    OptionParam(name: 'template', abbr: 't', help: 'Source template path or URL.'),
   );
 
-  final Option option;
-  const DefaultOptions(this.option);
+  final OptionParam option;
+  const DefaultOptionParams(this.option);
 
   String get name => option.name;
 
@@ -345,7 +345,7 @@ enum DefaultOptions {
 
 enum DefaultMultiOptions {
   ROOTS(
-    MultiOption(
+    MultiOptionParam(
       name: 'roots',
       abbr: 'r',
       help: 'Root directory input paths.',
@@ -353,7 +353,7 @@ enum DefaultMultiOptions {
     ),
   ),
   SUBS(
-    MultiOption(
+    MultiOptionParam(
       name: 'subs',
       abbr: 's',
       help: 'Sub-directory input paths.',
@@ -361,21 +361,21 @@ enum DefaultMultiOptions {
     ),
   ),
   PATH_PATTERNS(
-    MultiOption(
+    MultiOptionParam(
       name: 'patterns',
       abbr: 'p',
       help: 'Patterns to match paths to include.',
     ),
   ),
   TEMPLATES(
-    MultiOption(
+    MultiOptionParam(
       name: 'templates',
       abbr: 't',
       help: 'Source template paths or URLs.',
     ),
   );
 
-  final MultiOption multiOption;
+  final MultiOptionParam multiOption;
   const DefaultMultiOptions(this.multiOption);
 
   String get name => multiOption.name;
