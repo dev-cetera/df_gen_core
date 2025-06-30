@@ -329,7 +329,11 @@ enum DefaultOptionParams {
     OptionParam(name: 'output', abbr: 'o', help: 'Generated output path.'),
   ),
   TEMPLATE_PATH_OR_URL(
-    OptionParam(name: 'template', abbr: 't', help: 'Source template path or URL.'),
+    OptionParam(
+      name: 'template',
+      abbr: 't',
+      help: 'Source template path or URL.',
+    ),
   );
 
   final OptionParam option;

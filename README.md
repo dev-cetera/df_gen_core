@@ -6,7 +6,7 @@ Dart & Flutter Packages by dev-cetera.com & contributors.
 [![sponsor](https://img.shields.io/badge/sponsor-grey?logo=github-sponsors)](https://github.com/sponsors/dev-cetera)
 [![patreon](https://img.shields.io/badge/patreon-grey?logo=patreon)](https://www.patreon.com/c/RobertMollentze)
 [![pub](https://img.shields.io/pub/v/df_gen_core.svg)](https://pub.dev/packages/df_gen_core)
-[![tag](https://img.shields.io/badge/tag-v0.6.16-purple?logo=github)](https://github.com/dev-cetera/df_gen_core/tree/v0.6.16)
+[![tag](https://img.shields.io/badge/tag-v0.7.0-purple?logo=github)](https://github.com/dev-cetera/df_gen_core/tree/v0.7.0)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/dev-cetera/df_gen_core/main/LICENSE)
 
 ---
@@ -51,4 +51,3 @@ If you're enjoying this package and find it valuable, consider showing your appr
 ## 🧑‍⚖️ License
 
 This project is released under the [MIT License](https://raw.githubusercontent.com/dev-cetera/df_gen_core/main/LICENSE). See [LICENSE](https://raw.githubusercontent.com/dev-cetera/df_gen_core/main/LICENSE) for more information.
-
