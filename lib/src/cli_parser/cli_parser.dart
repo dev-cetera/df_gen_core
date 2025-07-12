@@ -1,9 +1,10 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
-// source code is governed by an MIT-style license described in the LICENSE
-// file located in this project's root directory.
+// Copyright © dev-cetera.com & contributors.
+//
+// The use of this source code is governed by an MIT-style license described in
+// the LICENSE file located in this project's root directory.
 //
 // See: https://opensource.org/license/mit
 //
@@ -319,8 +320,7 @@ enum DefaultOptionParams {
   DART_SDK(
     OptionParam(
       name: 'dart-sdk',
-      help:
-          'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
+      help: 'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
     ),
   ),
   INPUT_PATH(OptionParam(name: 'input', abbr: 'i', help: 'Source input path.')),

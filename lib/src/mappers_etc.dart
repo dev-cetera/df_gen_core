@@ -1,9 +1,10 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
-// source code is governed by an MIT-style license described in the LICENSE
-// file located in this project's root directory.
+// Copyright © dev-cetera.com & contributors.
+//
+// The use of this source code is governed by an MIT-style license described in
+// the LICENSE file located in this project's root directory.
 //
 // See: https://opensource.org/license/mit
 //
@@ -39,10 +40,7 @@ String buildCollectionMapper(
       .._largs = Iterable.generate(pLength, (n) => n).map((n) => 'p$n')
       .._type = element[1];
     final argIdMatch = RegExp(r'#x(\d+)').firstMatch(output);
-    collectionEvent._nameIndex =
-        argIdMatch != null &&
-            argIdMatch.groupCount >
-                0 //
+    collectionEvent._nameIndex = argIdMatch != null && argIdMatch.groupCount > 0 //
         ? int.tryParse(argIdMatch.group(1)!)
         : null;
     final xHash = '#x${collectionEvent._nameIndex}';
@@ -159,8 +157,7 @@ TTypeMappers filterMappersByType(TTypeMappers mappers, String type) {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TTypeMappers<E extends MapperEvent> =
-    Map<String, String Function(E event)>;
+typedef TTypeMappers<E extends MapperEvent> = Map<String, String Function(E event)>;
 
 TTypeMappers<T> newTypeMap<T extends MapperEvent>(
   Map<String, String Function(T)> src,
@@ -177,8 +174,7 @@ TTypeMappers<T> newTypeMap<T extends MapperEvent>(
 abstract class TypeMappers {
   TTypeMappers<MapperEvent> get fromMappers =>
       {...collectionFromMappers, ...objectFromMappers}.cast();
-  TTypeMappers<MapperEvent> get toMappers =>
-      {...collectionToMappers, ...objectToMappers}.cast();
+  TTypeMappers<MapperEvent> get toMappers => {...collectionToMappers, ...objectToMappers}.cast();
   TTypeMappers<CollectionMapperEvent> get collectionFromMappers;
   TTypeMappers<CollectionMapperEvent> get collectionToMappers;
   TTypeMappers<ObjectMapperEvent> get objectFromMappers;

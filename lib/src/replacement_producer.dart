@@ -1,9 +1,10 @@
 //.title
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
-// Dart/Flutter (DF) Packages by dev-cetera.com & contributors. The use of this
-// source code is governed by an MIT-style license described in the LICENSE
-// file located in this project's root directory.
+// Copyright © dev-cetera.com & contributors.
+//
+// The use of this source code is governed by an MIT-style license described in
+// the LICENSE file located in this project's root directory.
 //
 // See: https://opensource.org/license/mit
 //
@@ -19,8 +20,7 @@ class ReplacementProducer<TInsight, TPlaceholder extends Enum> {
   //
   //
 
-  final Future<List<InsightMapper<TInsight, TPlaceholder>>> Function()
-  _getMappers;
+  final Future<List<InsightMapper<TInsight, TPlaceholder>>> Function() _getMappers;
 
   //
   //
@@ -32,17 +32,17 @@ class ReplacementProducer<TInsight, TPlaceholder extends Enum> {
   //
   //
 
-  Future<Map<String, String>> Function(TInsight insight)
-  get produceReplacements => (insight) async {
-    final mappers = await this._getMappers();
-    final entries = await Future.wait(
-      mappers.map((e) async {
-        return MapEntry(
-          e.placeholder.placeholder,
-          await e.mapInsights(insight),
+  Future<Map<String, String>> Function(TInsight insight) get produceReplacements =>
+      (insight) async {
+        final mappers = await this._getMappers();
+        final entries = await Future.wait(
+          mappers.map((e) async {
+            return MapEntry(
+              e.placeholder.placeholder,
+              await e.mapInsights(insight),
+            );
+          }),
         );
-      }),
-    );
-    return Map.fromEntries(entries);
-  };
+        return Map.fromEntries(entries);
+      };
 }
