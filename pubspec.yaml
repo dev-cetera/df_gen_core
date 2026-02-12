@@ -12,11 +12,13 @@
 
 name: df_gen_core
 homepage: https://dev-cetera.com/
-repository: https://github.com/dev-cetera/df_gen_core
 funding:
 - https://www.buymeacoffee.com/dev_cetera
-- https://www.patreon.com/c/RobertMollentze
-- https://github.com/sponsors/robmllze
+- https://www.patreon.com/c/robelator
+- https://github.com/sponsors/robelator
+- https://www.patreon.com/c/robelator
+- https://github.com/sponsors/robelator
+- https://www.buymeacoffee.com/dev_cetera
 description: A package that provides core utilities for practical code generation.
 version: 0.7.1
 

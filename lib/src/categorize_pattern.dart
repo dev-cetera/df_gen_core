@@ -29,7 +29,7 @@ final class CategorizedPattern<T> {
   //
   //
 
-  RegExp get regExp => RegExp(this.pattern);
+  RegExp get regExp => RegExp(pattern);
 
   //
   //
