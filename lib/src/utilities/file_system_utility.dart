@@ -72,14 +72,16 @@ final class FileSystemUtility {
     String branch = 'main',
     required String filePath,
   }) {
-    final url = 'https://raw.githubusercontent.com/$username/$repo/$branch/$filePath';
+    final url =
+        'https://raw.githubusercontent.com/$username/$repo/$branch/$filePath';
     return readFileFromUrlOrNull(url);
   }
 
   /// Reads the contents of a file located at [pathOrUrl].
   Async<String> readFileFromPathOrUrl(String pathOrUrl) {
     return Async(() async {
-      return (await readLocalFileOrNull(pathOrUrl) ?? await readFileFromUrlOrNull(pathOrUrl))!;
+      return (await readLocalFileOrNull(pathOrUrl) ??
+          await readFileFromUrlOrNull(pathOrUrl))!;
     });
   }
 
@@ -287,7 +289,8 @@ final class FileSystemUtility {
     final topmostResults = <T>[];
     for (final result in dirPaths1) {
       if (topmostResults.every(
-        (topmostResult) => !toPath(result).startsWith('${toPath(topmostResult)}/'),
+        (topmostResult) =>
+            !toPath(result).startsWith('${toPath(topmostResult)}/'),
       )) {
         topmostResults.add(result);
       }

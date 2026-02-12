@@ -35,7 +35,8 @@ class Intersection<TInsight> {
     Map<String, dynamic> staticReplacements,
   ) {
     return insights.map(
-      (insight) => Intersection(insight: insight, replacements: staticReplacements),
+      (insight) =>
+          Intersection(insight: insight, replacements: staticReplacements),
     );
   }
 

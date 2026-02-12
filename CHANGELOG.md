@@ -2,8 +2,9 @@
 
 ## [0.7.1]
 
-- Released @ 7/2025 (UTC)
+- Released @ 2/2026 (UTC)
 - Update dependencies
+- Update and format
 
 ## [0.7.0]
 

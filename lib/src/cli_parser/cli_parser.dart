@@ -320,7 +320,8 @@ enum DefaultOptionParams {
   DART_SDK(
     OptionParam(
       name: 'dart-sdk',
-      help: 'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
+      help:
+          'Dart SDK path. Alternatively, set the "DART_SDK" path env variable.',
     ),
   ),
   INPUT_PATH(OptionParam(name: 'input', abbr: 'i', help: 'Source input path.')),
