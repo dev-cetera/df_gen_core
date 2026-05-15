@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.3]
+
+- Released @ 5/2026 (UTC)
+- AI fixes
+
 ## [0.7.2]
 
 - Released @ 5/2026 (UTC)

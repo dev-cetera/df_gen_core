@@ -1,7 +1,7 @@
-[![banner](https://github.com/dev-cetera/df_gen_core/blob/v0.7.2/doc/assets/banner.png?raw=true)](https://github.com/dev-cetera)
+[![banner](https://github.com/dev-cetera/df_gen_core/blob/v0.7.3/doc/assets/banner.png?raw=true)](https://github.com/dev-cetera)
 
 [![pub](https://img.shields.io/pub/v/df_gen_core.svg)](https://pub.dev/packages/df_gen_core)
-[![tag](https://img.shields.io/badge/Tag-v0.7.2-purple?logo=github)](https://github.com/dev-cetera/df_gen_core/tree/v0.7.2)
+[![tag](https://img.shields.io/badge/Tag-v0.7.3-purple?logo=github)](https://github.com/dev-cetera/df_gen_core/tree/v0.7.3)
 [![buymeacoffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/dev_cetera)
 [![sponsor](https://img.shields.io/badge/Sponsor-grey?logo=github-sponsors&logoColor=pink)](https://github.com/sponsors/dev-cetera)
 [![patreon](https://img.shields.io/badge/Patreon-grey?logo=patreon)](https://www.patreon.com/robelator)
