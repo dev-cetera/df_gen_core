@@ -127,7 +127,7 @@ final class FileSystemUtility {
     if (!await directory.exists()) return null;
     final entities = directory.listSync(recursive: true);
     for (final entity in entities) {
-      if (entity is File && entity.path.endsWith('/$fileName')) {
+      if (entity is File && p.basename(entity.path) == fileName) {
         return entity;
       }
     }
@@ -159,11 +159,23 @@ final class FileSystemUtility {
   /// Gets the current OS's Desktop path.
   String? getDesktopPathOrNull() {
     if (Platform.isMacOS) {
-      return p.join('Users', Platform.environment['USER']!, 'Desktop');
+      return p.join(
+        '/',
+        'Users',
+        Platform.environment['USER'] ?? 'unknown',
+        'Desktop',
+      );
     } else if (Platform.isWindows) {
-      return p.join(Platform.environment['USERPROFILE']!, 'Desktop');
+      final userProfile = Platform.environment['USERPROFILE'];
+      if (userProfile == null) return null;
+      return p.join(userProfile, 'Desktop');
     } else if (Platform.isLinux) {
-      return p.join('home', Platform.environment['USER']!, 'Desktop');
+      return p.join(
+        '/',
+        'home',
+        Platform.environment['USER'] ?? 'unknown',
+        'Desktop',
+      );
     } else {
       return null;
     }

@@ -72,18 +72,21 @@ class PathExplorer {
         if (await FileSystemEntity.isDirectory(path)) {
           DirPathExplorerFinding? temp;
           final s = recurse(path, () => temp!);
+          final allFindings = await s.toList();
+          final fileList = allFindings
+              .whereType<FilePathExplorerFinding>()
+              .toList();
+          final dirList = allFindings
+              .whereType<DirPathExplorerFinding>()
+              .toList();
           temp = DirPathExplorerFinding._(
             path: path,
-            files: s
-                .where((e) => e is FilePathExplorerFinding)
-                .cast<FilePathExplorerFinding>(),
-            dirs: s
-                .where((e) => e is DirPathExplorerFinding)
-                .cast<DirPathExplorerFinding>(),
+            files: Stream.fromIterable(fileList),
+            dirs: Stream.fromIterable(dirList),
             parentDir: parentDir,
           );
           yield temp;
-          yield* s;
+          yield* Stream.fromIterable(allFindings);
         } else {
           yield FilePathExplorerFinding._(path: path);
         }

@@ -42,8 +42,9 @@ final class MdTemplateUtility {
     String content, {
     String? langCode,
   }) {
+    final escapedLangCode = langCode != null ? RegExp.escape(langCode) : null;
     final dartCodeRegex = RegExp(
-      '```(${langCode ?? '[^\\n]*'})\\n(.*?)```',
+      '```(${escapedLangCode ?? '[^\\n]*'})\\n(.*?)```',
       dotAll: true,
     );
     final matches = dartCodeRegex.allMatches(content);

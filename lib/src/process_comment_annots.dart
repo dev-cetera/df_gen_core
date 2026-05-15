@@ -75,19 +75,20 @@ Future<void> processCommentAnnots({
     }
   }
 
-  // Remove all annots from lines specified in annotsToDelete.
-  if (annotsToDelete.isNotEmpty) {
-    final annotsToDelete1 = annotsToDelete.map($strip);
-    final lines1 = List.of(lines);
-    for (final annot in annots.entries) {
-      final index = annot.key;
-      final annotation = annot.value;
-      if (annotsToDelete1.contains(annotation)) {
+    // Remove all annots from lines specified in annotsToDelete.
+    if (annotsToDelete.isNotEmpty) {
+      final annotsToDelete1 = annotsToDelete.map($strip);
+      final lines1 = List.of(lines);
+      final indicesToRemove = annots.entries
+          .where((a) => annotsToDelete1.contains(a.value))
+          .map((a) => a.key)
+          .toList()
+        ..sort((a, b) => b.compareTo(a));
+      for (final index in indicesToRemove) {
         lines1.removeAt(index);
       }
+      await FileSystemUtility.i.writeLocalFile(filePath, lines1.join('\n'));
     }
-    await FileSystemUtility.i.writeLocalFile(filePath, lines1.join('\n'));
-  }
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
