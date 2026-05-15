@@ -85,8 +85,8 @@ final class DartAnnotatedClassAnalyzer {
       fullFileUri.toString(),
     );
     if (library is LibraryElementResult) {
-      final classElements =
-          library.element.topLevelElements.whereType<ClassElement>();
+      final classElements = library.element.topLevelElements
+          .whereType<ClassElement>();
       for (final classElement in classElements) {
         final className = classElement.displayName;
         if (classNameFilter == null || classNameFilter.hasMatch(className)) {
@@ -306,9 +306,8 @@ final class OnAnnotatedClassParams {
   });
 }
 
-typedef TOnAnnotatedClassCallback = Future<dynamic> Function(
-  OnAnnotatedClassParams parent,
-);
+typedef TOnAnnotatedClassCallback =
+    Future<dynamic> Function(OnAnnotatedClassParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -329,9 +328,8 @@ final class OnClassAnnotationFieldParams {
   });
 }
 
-typedef TOnClassAnnotationFieldCallback = Future<dynamic> Function(
-  OnClassAnnotationFieldParams parent,
-);
+typedef TOnClassAnnotationFieldCallback =
+    Future<dynamic> Function(OnClassAnnotationFieldParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -350,9 +348,8 @@ final class OnAnnotatedMethodParams {
   });
 }
 
-typedef TOnAnnotatedMethodCallback = Future<dynamic> Function(
-  OnAnnotatedMethodParams parent,
-);
+typedef TOnAnnotatedMethodCallback =
+    Future<dynamic> Function(OnAnnotatedMethodParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -373,9 +370,8 @@ final class OnMethodAnnotationFieldParams {
   });
 }
 
-typedef TOnMethodAnnotationFieldCallback = Future<dynamic> Function(
-  OnMethodAnnotationFieldParams parent,
-);
+typedef TOnMethodAnnotationFieldCallback =
+    Future<dynamic> Function(OnMethodAnnotationFieldParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -396,9 +392,8 @@ final class OnAnnotatedMemberParams {
   });
 }
 
-typedef TOnAnnotatedMemberCallback = Future<dynamic> Function(
-  OnAnnotatedMemberParams parent,
-);
+typedef TOnAnnotatedMemberCallback =
+    Future<dynamic> Function(OnAnnotatedMemberParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -419,9 +414,8 @@ final class OnMemberAnnotationFieldParams {
   });
 }
 
-typedef TOnMemberAnnotationFieldsCallback = Future<dynamic> Function(
-  OnMemberAnnotationFieldParams parent,
-);
+typedef TOnMemberAnnotationFieldsCallback =
+    Future<dynamic> Function(OnMemberAnnotationFieldParams parent);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 

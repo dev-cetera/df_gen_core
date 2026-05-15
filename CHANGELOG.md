@@ -2,8 +2,9 @@
 
 ## [0.7.2]
 
-- Released @ 2/2026 (UTC)
+- Released @ 5/2026 (UTC)
 - Bump version
+- fix issues
 
 ## [0.7.1]
 
