@@ -11,4 +11,6 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-typedef TGeneratorFn = Future<void> Function(List<String> args);
+extension PlaceholderOnEnumExt on Enum {
+  String get placeholder => '___${name}___';
+}

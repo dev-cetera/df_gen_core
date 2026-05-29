@@ -52,15 +52,22 @@ final class FileSystemUtility {
   }
 
   /// Reads the contents of the file located at [url] as a String.
-  Future<String?> readFileFromUrlOrNull(String url) async {
+  ///
+  /// Times out after [timeout] (default 30 seconds) so a hung server cannot
+  /// stall the generator indefinitely. Returns `null` on any failure (timeout,
+  /// non-200 status, malformed URL, network error).
+  Future<String?> readFileFromUrlOrNull(
+    String url, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url)).timeout(timeout);
       if (response.statusCode == 200) {
         return utf8.decode(response.bodyBytes);
       } else {
         return null;
       }
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -71,10 +78,11 @@ final class FileSystemUtility {
     required String repo,
     String branch = 'main',
     required String filePath,
+    Duration timeout = const Duration(seconds: 30),
   }) {
     final url =
         'https://raw.githubusercontent.com/$username/$repo/$branch/$filePath';
-    return readFileFromUrlOrNull(url);
+    return readFileFromUrlOrNull(url, timeout: timeout);
   }
 
   /// Reads the contents of a file located at [pathOrUrl].
@@ -119,14 +127,17 @@ final class FileSystemUtility {
   }
 
   /// Finds a file with the given [fileName] in [directoryPath] or subdirectories.
+  ///
+  /// Uses an async directory listing so a large tree does not block the event
+  /// loop. Returns the first match in traversal order, or `null` if no match
+  /// is found or the directory does not exist.
   Future<File?> findLocalFileByNameOrNull(
     String fileName,
     String directoryPath,
   ) async {
     final directory = Directory(directoryPath);
     if (!await directory.exists()) return null;
-    final entities = directory.listSync(recursive: true);
-    for (final entity in entities) {
+    await for (final entity in directory.list(recursive: true)) {
       if (entity is File && p.basename(entity.path) == fileName) {
         return entity;
       }
@@ -300,10 +311,12 @@ final class FileSystemUtility {
     dirPaths1.sort((a, b) => toPath(a).length.compareTo(toPath(b).length));
     final topmostResults = <T>[];
     for (final result in dirPaths1) {
-      if (topmostResults.every(
-        (topmostResult) =>
-            !toPath(result).startsWith('${toPath(topmostResult)}/'),
-      )) {
+      final candidate = toPath(result);
+      if (topmostResults.every((topmostResult) {
+        final parent = toPath(topmostResult);
+        return !p.isWithin(parent, candidate) &&
+            p.normalize(candidate) != p.normalize(parent);
+      })) {
         topmostResults.add(result);
       }
     }

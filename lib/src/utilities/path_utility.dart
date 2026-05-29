@@ -140,12 +140,12 @@ bool isPrivateFileName(String filePath) {
   String endType,
 ) {
   final fileName = PathUtility.i.localBaseName(filePath);
+  final lcFileName = fileName.toLowerCase();
   final a = begType.isEmpty
       ? true
-      : fileName.startsWith('${begType.toLowerCase()}_');
-  final b = endType.isEmpty
-      ? true
-      : fileName.endsWith('.$endType'.toLowerCase());
+      : lcFileName.startsWith('${begType.toLowerCase()}_');
+  final b =
+      endType.isEmpty ? true : lcFileName.endsWith('.${endType.toLowerCase()}');
   final c = a && b;
   return (status: c, fileName: fileName);
 }

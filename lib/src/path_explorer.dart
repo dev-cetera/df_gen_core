@@ -23,6 +23,11 @@ import '../df_gen_core.dart';
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 /// A mechanism to explore files and folders from specified [combinations].
+///
+/// The exploration is streaming: only one [FileSystemEntity] at a time is
+/// held in memory regardless of tree size. Each directory finding's [files]
+/// and [dirs] streams are lazy and walk the directory on subscription, so
+/// they can be iterated independently of the main [explore] stream.
 class PathExplorer {
   //
   //
@@ -63,75 +68,63 @@ class PathExplorer {
   }
 
   Stream<PathExplorerFinding> explore() async* {
-    Stream<PathExplorerFinding> recurse(
-      String dirPath,
-      DirPathExplorerFinding Function()? parentDir,
-    ) async* {
-      final paths = _normalizedDirContent(dirPath);
-      await for (final path in paths) {
-        if (await FileSystemEntity.isDirectory(path)) {
-          DirPathExplorerFinding? temp;
-          final s = recurse(path, () => temp!);
-          final allFindings = await s.toList();
-          final fileList = allFindings
-              .whereType<FilePathExplorerFinding>()
-              .toList();
-          final dirList = allFindings
-              .whereType<DirPathExplorerFinding>()
-              .toList();
-          temp = DirPathExplorerFinding._(
-            path: path,
-            files: Stream.fromIterable(fileList),
-            dirs: Stream.fromIterable(dirList),
-            parentDir: parentDir,
-          );
-          yield temp;
-          yield* Stream.fromIterable(allFindings);
-        } else {
-          yield FilePathExplorerFinding._(path: path);
-        }
-      }
-    }
-
     for (final get in combinations) {
       for (final dirPath in get()) {
-        final dirFindingStream = recurse(dirPath, null);
+        yield* _walk(dirPath, null);
+      }
+    }
+  }
 
-        // Yield the top-level findings and subdirectories/files
-        yield* dirFindingStream;
+  /// Yields every finding under [dirPath] in pre-order: the parent directory
+  /// is emitted before any of its descendants. No intermediate buffering.
+  static Stream<PathExplorerFinding> _walk(
+    String dirPath,
+    DirPathExplorerFinding Function()? parentDir,
+  ) async* {
+    await for (final path in _normalizedDirContent(dirPath)) {
+      final isDir = await FileSystemEntity.isDirectory(path);
+      if (isDir) {
+        DirPathExplorerFinding? self;
+        self = DirPathExplorerFinding._(
+          path: path,
+          files: _lazyImmediateFiles(path),
+          dirs: _lazyImmediateDirs(path),
+          parentDir: parentDir,
+        );
+        yield self;
+        yield* _walk(path, () => self!);
+      } else {
+        yield FilePathExplorerFinding._(path: path);
       }
     }
   }
 
   Stream<FileData> readFiles(bool Function(FilePathExplorerFinding) filter) {
-    return exploreFiles()
-        .where(filter)
-        .asyncMap(
+    return exploreFiles().where(filter).asyncMap(
           (a) async => File(a.path).readAsBytes().then((b) => FileData(a, b)),
         );
   }
 
-  /// Calls [explore] and reads the content of each file found up to [limit] files if specified.
-  /// Returns a stream of [FileReadFinding] containing file paths and their content.
+  /// Calls [explore] and reads the content of each file found up to [limit]
+  /// files if specified. Returns a stream of [FileReadFinding] containing file
+  /// paths and their content. Read errors are logged and skipped — they do not
+  /// abort the traversal.
   Stream<FileReadFinding> readAll({int? limit}) async* {
-    final explorerStream = explore();
     var count = 0;
-
-    await for (final finding in explorerStream) {
+    await for (final finding in explore()) {
       if (finding is FilePathExplorerFinding) {
         if (limit != null && count >= limit) {
           break;
         }
         try {
-          final path = finding.path;
-          final file = File(path);
-          final contents = await file.readAsString();
+          final contents = await File(finding.path).readAsString();
           if (contents.isNotEmpty) {
-            yield FileReadFinding._(path: path, content: contents);
+            yield FileReadFinding._(path: finding.path, content: contents);
             count++;
           }
-        } catch (_) {
-          // Optionally handle errors here
+        } catch (e) {
+          Log.printRed(
+              'PathExplorer.readAll: failed to read ${finding.path} ($e)',);
         }
       }
     }
@@ -140,14 +133,12 @@ class PathExplorer {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TPathExplorerFindings =
-    Future<
-      ({
-        Set<DirPathExplorerFinding> rootDirPathFindings,
-        Set<DirPathExplorerFinding> dirPathFindings,
-        Set<FilePathExplorerFinding> filePathFindings,
-      })
-    >;
+typedef TPathExplorerFindings = Future<
+    ({
+      Set<DirPathExplorerFinding> rootDirPathFindings,
+      Set<DirPathExplorerFinding> dirPathFindings,
+      Set<FilePathExplorerFinding> filePathFindings,
+    })>;
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -241,7 +232,7 @@ final class DirPathExplorerFinding extends PathExplorerFinding {
       yield file;
     }
     await for (final dir in dirs) {
-      yield* dir.getSubFiles().asBroadcastStream();
+      yield* dir.getSubFiles();
     }
   }
 }
@@ -266,20 +257,46 @@ sealed class PathExplorerFinding {
 //
 //
 
-/// Lists all contents of the given [dirPath].
+/// Lists all immediate contents of [dirPath]. Yields normalized paths.
+///
+/// If the directory cannot be opened, the error is logged and the stream
+/// closes empty — the traversal continues with the next directory rather
+/// than aborting.
 Stream<String> _normalizedDirContent(String dirPath) async* {
   final dir = Directory(dirPath);
-  yield* dir.list(recursive: false).map((e) => p.normalize(e.path));
+  try {
+    yield* dir.list(recursive: false).handleError(
+      (Object e) {
+        Log.printRed('PathExplorer: error listing entry in $dirPath ($e)');
+      },
+      test: (_) => true,
+    ).map((e) => p.normalize(e.path));
+  } catch (e) {
+    Log.printRed('PathExplorer: cannot list $dirPath ($e)');
+  }
 }
 
-// Stream<FilePathExplorerFinding> flattenDirsToFiles(Stream<PathExplorerFinding> dirStream) async* {
-//   await for (final e in dirStream) {
-//     if (e is DirPathExplorerFinding) {
-//       yield* e.files;
-//       yield* flattenDirsToFiles(e.dirs);
-//     }
-//     if (e is FilePathExplorerFinding) {
-//       yield e;
-//     }
-//   }
-// }
+/// Lazy stream of immediate files in [dirPath], rebuilt on each subscription.
+Stream<FilePathExplorerFinding> _lazyImmediateFiles(String dirPath) async* {
+  await for (final path in _normalizedDirContent(dirPath)) {
+    if (await FileSystemEntity.isFile(path)) {
+      yield FilePathExplorerFinding._(path: path);
+    }
+  }
+}
+
+/// Lazy stream of immediate subdirectories in [dirPath], rebuilt on each
+/// subscription. The yielded findings carry lazy children streams of their
+/// own so the consumer can keep walking without re-listing the parent.
+Stream<DirPathExplorerFinding> _lazyImmediateDirs(String dirPath) async* {
+  await for (final path in _normalizedDirContent(dirPath)) {
+    if (await FileSystemEntity.isDirectory(path)) {
+      yield DirPathExplorerFinding._(
+        path: path,
+        files: _lazyImmediateFiles(path),
+        dirs: _lazyImmediateDirs(path),
+        parentDir: null,
+      );
+    }
+  }
+}

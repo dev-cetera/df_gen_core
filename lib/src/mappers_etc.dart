@@ -11,6 +11,19 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
+import 'package:df_log/df_log.dart';
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+/// Returned by [_buildMapper] when a type has no matching mapper. Embedded
+/// verbatim into the output so the user sees the offending type at the exact
+/// failure location instead of a stray `#x0`/`#p0` placeholder that would
+/// corrupt the generated source silently.
+String _missingMapperSentinel(String? type) =>
+    '/* MISSING_MAPPER_FOR(${type ?? '<null>'}) */';
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
 /// Mapper event for collection types, e.g. Map, List, Set.
 final class CollectionMapperEvent extends MapperEvent {
   Iterable<String> _largs = [];
@@ -41,17 +54,21 @@ String buildCollectionMapper(
       .._type = element[1];
     final argIdMatch = RegExp(r'#x(\d+)').firstMatch(output);
     collectionEvent._nameIndex =
-        argIdMatch != null &&
-            argIdMatch.groupCount >
-                0 //
-        ? int.tryParse(argIdMatch.group(1)!)
-        : null;
+        argIdMatch != null && argIdMatch.groupCount > 0 //
+            ? int.tryParse(argIdMatch.group(1)!)
+            : null;
     final xHash = '#x${collectionEvent._nameIndex}';
     final formula = _buildMapper(collectionEvent, mappers);
     if (formula != null) {
       output = output.replaceFirst(xHash, formula);
     } else {
-      assert(false, 'Collection type-mapper not found!');
+      final type = collectionEvent.type;
+      Log.printRed(
+        'buildCollectionMapper: no mapper matched collection type `$type`. '
+        'Add a mapper for it or the generated code will not compile.',
+      );
+      assert(false, 'Collection type-mapper not found for `$type`!');
+      output = output.replaceFirst(xHash, _missingMapperSentinel(type));
     }
     // Loop through object types.
     for (var n = 0; n < pLength; n++) {
@@ -60,8 +77,12 @@ String buildCollectionMapper(
         .._type = collectionEvent._ltypes.elementAt(n);
       final pHash = '#p$n';
 
-      // If the object type is the next type data element.
-      if (objectEvent.type?[0] == '*') {
+      // If the object type is the next type data element, replace the slot
+      // with `#x<n>` so the next iteration's collection mapper fills it.
+      // Guarded against empty type strings — `type[0]` would otherwise throw
+      // RangeError.
+      final objectType = objectEvent.type;
+      if (objectType != null && objectType.isNotEmpty && objectType[0] == '*') {
         final xHash = '#x$n';
         output = output.replaceFirst(pHash, xHash);
       }
@@ -72,7 +93,16 @@ String buildCollectionMapper(
         if (formula != null) {
           output = output.replaceFirst(pHash, formula);
         } else {
-          assert(false, 'Object type-mapper not found!');
+          Log.printRed(
+            'buildCollectionMapper: no mapper matched object type '
+            '`$objectType`. Add a mapper for it or the generated code will '
+            'not compile.',
+          );
+          assert(false, 'Object type-mapper not found for `$objectType`!');
+          output = output.replaceFirst(
+            pHash,
+            _missingMapperSentinel(objectType),
+          );
         }
       }
     }
@@ -127,16 +157,19 @@ String? _buildMapper(MapperEvent event, TTypeMappers mappers) {
   if (type != null) {
     // Get all mappers that match the type.
     final results = filterMappersByType(mappers, type);
-    assert(results.isNotEmpty);
+    assert(results.isNotEmpty, '_buildMapper: no mapper matched `$type`');
     // If there are any matches, take the first one.
     if (results.isNotEmpty) {
       final result = results.entries.first;
       final typePattern = result.key;
       final match = RegExp(typePattern).firstMatch(type);
       if (match != null) {
+        // Optional regex groups can be null (e.g. `(\?)?`). Coerce to '' so a
+        // mapper that interpolates `${e.matchGroups.elementAt(N)}` never
+        // crashes on a non-matching optional group.
         event._matchGroups = Iterable.generate(
           match.groupCount + 1,
-          (i) => match.group(i)!,
+          (i) => match.group(i) ?? '',
         );
         final eventMapper = result.value;
         return eventMapper(event);
@@ -160,8 +193,8 @@ TTypeMappers filterMappersByType(TTypeMappers mappers, String type) {
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TTypeMappers<E extends MapperEvent> =
-    Map<String, String Function(E event)>;
+typedef TTypeMappers<E extends MapperEvent>
+    = Map<String, String Function(E event)>;
 
 TTypeMappers<T> newTypeMap<T extends MapperEvent>(
   Map<String, String Function(T)> src,

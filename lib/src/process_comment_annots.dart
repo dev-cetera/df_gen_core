@@ -62,12 +62,11 @@ Future<void> processCommentAnnots({
     // Save all annots.
     annots[lineNumber] = annot1;
 
-    // Process the annot.
-    final proceed = await onAnnotCallbacks1[annot1]!(
-      lineNumber,
-      lines,
-      filePath,
-    );
+    // Process the annot. Skip unknown ones — the comment-annot pattern matches
+    // any `// word` comment, so unmapped keys are expected.
+    final callback = onAnnotCallbacks1[annot1];
+    if (callback == null) continue;
+    final proceed = await callback(lineNumber, lines, filePath);
 
     // Break the loop if the callback returns false.
     if (!proceed) {
@@ -79,12 +78,11 @@ Future<void> processCommentAnnots({
   if (annotsToDelete.isNotEmpty) {
     final annotsToDelete1 = annotsToDelete.map($strip);
     final lines1 = List.of(lines);
-    final indicesToRemove =
-        annots.entries
-            .where((a) => annotsToDelete1.contains(a.value))
-            .map((a) => a.key)
-            .toList()
-          ..sort((a, b) => b.compareTo(a));
+    final indicesToRemove = annots.entries
+        .where((a) => annotsToDelete1.contains(a.value))
+        .map((a) => a.key)
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
     for (final index in indicesToRemove) {
       lines1.removeAt(index);
     }
@@ -94,5 +92,5 @@ Future<void> processCommentAnnots({
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-typedef TLineCallback =
-    Future<bool> Function(int lineNumber, List<String> lines, String filePath);
+typedef TLineCallback = Future<bool> Function(
+    int lineNumber, List<String> lines, String filePath,);

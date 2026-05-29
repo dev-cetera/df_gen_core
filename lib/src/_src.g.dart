@@ -8,9 +8,10 @@
 //.title~
 
 export 'template_interpolator.dart';
+export 'replace_data.dart';
 export 'path_explorer.dart';
 export 'get_path_combinations.dart';
-export 'placeholder_on_enum_x.dart';
+export 'placeholder_on_enum_ext.dart';
 export 'replacement_producer.dart';
 export 'categorize_pattern.dart';
 export 'mappers_etc.dart';
@@ -20,6 +21,7 @@ export 'structures/class_insight.dart';
 export 'structures/file_insight.dart';
 export 'structures/dir_insight.dart';
 export 'structures/intersection.dart';
+export 'language_support/process_outcome.dart';
 export 'language_support/rust_support.dart';
 export 'language_support/ts_js_support.dart';
 export 'language_support/dart_annotated_class_analyzer.dart';

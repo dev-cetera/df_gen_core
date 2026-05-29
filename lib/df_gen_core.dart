@@ -14,7 +14,9 @@
 /// A package that provides core utilities for practical code generation.
 library;
 
-export 'src/_index.g.dart';
+export 'src/_src.g.dart';
 
+export 'package:analyzer/dart/analysis/analysis_context_collection.dart'
+    show AnalysisContextCollection;
 export 'package:df_config/df_config.dart';
 export 'package:df_log/df_log.dart';

@@ -18,24 +18,56 @@ import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:df_log/df_log.dart';
 import 'package:path/path.dart' as p;
 
+import 'process_outcome.dart';
+
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-/// Formats the Dart file at [filePath] via the `dart format` command
-Future<void> fmtDartFile(String filePath) async {
-  try {
-    await Process.run('dart', ['format', filePath]);
-  } catch (_) {
-    Log.printRed('Error formatting Dart file at $filePath');
+/// Formats the Dart file at [filePath] via `dart format`.
+///
+/// Returns a [ProcessOutcome] capturing the exit code and any stderr output.
+/// `ok` is `false` if the file does not exist, the `dart` binary cannot be
+/// launched, or `dart format` exits non-zero.
+Future<ProcessOutcome> fmtDartFile(String filePath) async {
+  if (!await File(filePath).exists()) {
+    Log.printRed('Dart file not found: $filePath');
+    return ProcessOutcome.preconditionFailed('file not found: $filePath');
   }
+  final ProcessResult result;
+  try {
+    result = await Process.run('dart', ['format', filePath]);
+  } catch (e) {
+    Log.printRed('Could not run "dart format" on $filePath: $e');
+    return ProcessOutcome.launchFailed('$e');
+  }
+  final outcome = ProcessOutcome.fromResult(result);
+  if (!outcome.ok) {
+    Log.printRed('dart format failed for $filePath (${outcome.summary()})');
+  }
+  return outcome;
 }
 
-/// Fixes the Dart file at [filePath] via `dart fix --apply` command.
-Future<void> fixDartFile(String filePath) async {
-  try {
-    await Process.run('dart', ['fix', '--apply', filePath]);
-  } catch (_) {
-    Log.printRed('Error fixing Dart file at $filePath');
+/// Applies `dart fix --apply` to the Dart file at [filePath].
+///
+/// Returns a [ProcessOutcome] capturing the exit code and any stderr output.
+/// `ok` is `false` if the file does not exist, the `dart` binary cannot be
+/// launched, or `dart fix` exits non-zero.
+Future<ProcessOutcome> fixDartFile(String filePath) async {
+  if (!await File(filePath).exists()) {
+    Log.printRed('Dart file not found: $filePath');
+    return ProcessOutcome.preconditionFailed('file not found: $filePath');
   }
+  final ProcessResult result;
+  try {
+    result = await Process.run('dart', ['fix', '--apply', filePath]);
+  } catch (e) {
+    Log.printRed('Could not run "dart fix" on $filePath: $e');
+    return ProcessOutcome.launchFailed('$e');
+  }
+  final outcome = ProcessOutcome.fromResult(result);
+  if (!outcome.ok) {
+    Log.printRed('dart fix failed for $filePath (${outcome.summary()})');
+  }
+  return outcome;
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -50,10 +82,8 @@ AnalysisContextCollection createDartAnalysisContextCollection(
   String? fallbackDartSdkPath,
 ) {
   final sdkPath = Platform.environment['DART_SDK'] ?? fallbackDartSdkPath;
-  final includePaths = paths
-      .toSet()
-      .map((e) => p.normalize(p.absolute(e)))
-      .toList();
+  final includePaths =
+      paths.toSet().map((e) => p.normalize(p.absolute(e))).toList();
   final collection = AnalysisContextCollection(
     includedPaths: includePaths,
     resourceProvider: PhysicalResourceProvider.INSTANCE,

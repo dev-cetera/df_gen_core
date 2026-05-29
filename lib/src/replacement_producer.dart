@@ -11,7 +11,7 @@
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //.title~
 
-import '/src/_index.g.dart';
+import '_src.g.dart';
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -21,7 +21,7 @@ class ReplacementProducer<TInsight, TPlaceholder extends Enum> {
   //
 
   final Future<List<InsightMapper<TInsight, TPlaceholder>>> Function()
-  _getMappers;
+      _getMappers;
 
   //
   //
@@ -34,16 +34,16 @@ class ReplacementProducer<TInsight, TPlaceholder extends Enum> {
   //
 
   Future<Map<String, String>> Function(TInsight insight)
-  get produceReplacements => (insight) async {
-    final mappers = await _getMappers();
-    final entries = await Future.wait(
-      mappers.map((e) async {
-        return MapEntry(
-          e.placeholder.placeholder,
-          await e.mapInsights(insight),
-        );
-      }),
-    );
-    return Map.fromEntries(entries);
-  };
+      get produceReplacements => (insight) async {
+            final mappers = await _getMappers();
+            final entries = await Future.wait(
+              mappers.map((e) async {
+                return MapEntry(
+                  e.placeholder.placeholder,
+                  await e.mapInsights(insight),
+                );
+              }),
+            );
+            return Map.fromEntries(entries);
+          };
 }

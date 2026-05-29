@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0]
+
+- Released @ 5/2026 (UTC)
+- Fix: mapper builders no longer leave stray `#x0`/`#p0` placeholders in generated code when a type lacks a matching mapper; emit a visible `MISSING_MAPPER_FOR(...)` sentinel and log the offending type
+- Fix: `buildCollectionMapper` no longer crashes with `RangeError` on empty object-type strings
+- Fix: `_buildMapper` coerces optional non-matching regex groups to empty string instead of force-unwrapping null
+- New regression tests for the above
+
 ## [0.7.3]
 
 - Released @ 5/2026 (UTC)

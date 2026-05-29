@@ -38,16 +38,22 @@ final class MdTemplateUtility {
   }
 
   /// Extracts all code snippets for the language [langCode] from some Markdown [content].
+  ///
+  /// Fences must appear at the start of a line (optionally preceded by
+  /// whitespace) — this is the CommonMark rule and prevents inline triple
+  /// backticks from being misread as a snippet boundary.
   List<String> extractCodeSnippetsFromMarkdown(
     String content, {
     String? langCode,
   }) {
     final escapedLangCode = langCode != null ? RegExp.escape(langCode) : null;
-    final dartCodeRegex = RegExp(
-      '```(${escapedLangCode ?? '[^\\n]*'})\\n(.*?)```',
+    final fenceRegex = RegExp(
+      r'(?:^|\n)[ \t]*```(' +
+          (escapedLangCode ?? r'[^\n]*') +
+          r')\n(.*?)(?:\n[ \t]*```)',
       dotAll: true,
     );
-    final matches = dartCodeRegex.allMatches(content);
+    final matches = fenceRegex.allMatches(content);
     final snippets = matches.map((e) => e.group(2)?.trim() ?? '').toList();
     return snippets;
   }

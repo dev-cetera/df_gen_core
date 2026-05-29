@@ -28,16 +28,24 @@ class Spinner {
   int _index = 0;
   final List<String> _spinner = ['|', '/', '-', '\\'];
 
-  /// Runs the given function while showing a spinner animation.
+  /// Runs the given function while showing a spinner animation. The spinner
+  /// is always stopped before this returns — even when [fn] throws — so the
+  /// terminal isn't left with a dangling timer that keeps printing.
   Future<void> run(Future<void> Function() fn) async {
     start();
-    await fn();
-    stop();
+    try {
+      await fn();
+    } finally {
+      stop();
+    }
   }
 
-  /// Starts the spinner animation.
+  /// Starts the spinner animation. No-op when [stdout] is not attached to a
+  /// terminal — animating into a pipe or log file would just write control
+  /// characters that pollute captured output.
   void start() {
     stop();
+    if (!stdout.hasTerminal) return;
     _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       stdout.write('\r${_spinner[_index]}');
       _index = (_index + 1) % _spinner.length;
@@ -46,7 +54,9 @@ class Spinner {
 
   void stop() {
     if (_timer != null) {
-      stdout.write('\r');
+      if (stdout.hasTerminal) {
+        stdout.write('\r');
+      }
       _timer!.cancel();
       _timer = null;
     }
