@@ -21,6 +21,14 @@ class ClassInsight<TAnnotation> {
   final String dirPath;
   final String fileName;
 
+  /// Display name of the annotated abstract class's direct supertype, if
+  /// the extractor was able to determine it (e.g. `Model`, `BaseModel`,
+  /// or a user-defined base). `null` when unknown. Used by the generator
+  /// to decide inheritance-driven behaviours (e.g. whether to mix in
+  /// EquatableMixin — classes that extend BaseModel skip it because
+  /// their instances may appear in const Sets).
+  final String? supertypeName;
+
   //
   //
   //
@@ -30,5 +38,6 @@ class ClassInsight<TAnnotation> {
     required this.className,
     required this.dirPath,
     required this.fileName,
+    this.supertypeName,
   });
 }

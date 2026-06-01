@@ -19,6 +19,19 @@ void main() {
       expect(insight.className, 'MyClass');
       expect(insight.dirPath, '/lib/src');
       expect(insight.fileName, 'my_class.dart');
+      // supertypeName defaults to null when the extractor can't determine it.
+      expect(insight.supertypeName, isNull);
+    });
+
+    test('captures the supertype display name when provided', () {
+      const insight = ClassInsight<String>(
+        annotation: 'a',
+        className: '_MyModel',
+        dirPath: '.',
+        fileName: 'my_model.dart',
+        supertypeName: 'Model',
+      );
+      expect(insight.supertypeName, 'Model');
     });
 
     test('accepts complex annotation payloads via the generic type', () {
