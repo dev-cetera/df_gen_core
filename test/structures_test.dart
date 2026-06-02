@@ -57,7 +57,8 @@ void main() {
       expect(x.replacements['x'], 1);
     });
 
-    test('generateWithStatic broadcasts the same replacements to every '
+    test(
+        'generateWithStatic broadcasts the same replacements to every '
         'insight', () {
       final out = Intersection.generateWithStatic<String>(
         ['a', 'b', 'c'],
@@ -99,8 +100,7 @@ void main() {
       expect(taken.first.insight, 'a');
     });
 
-    test('generateMultiWithDynamic yields per-insight replacements lazily',
-        () {
+    test('generateMultiWithDynamic yields per-insight replacements lazily', () {
       final iter = Intersection.generateMultiWithDynamic<String>(
         ['x', 'y'],
         (insight) => {'len': insight.length, 'value': insight},
@@ -172,7 +172,8 @@ void main() {
       expect(x.category, isNull);
     });
 
-    test('PerIntersection is a sealed family — pattern match is exhaustive', () {
+    test('PerIntersection is a sealed family — pattern match is exhaustive',
+        () {
       const samples = [
         PerFileIntersection<String>(
           sourceFilePathOrUrl: '/a',

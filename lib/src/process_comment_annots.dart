@@ -93,4 +93,7 @@ Future<void> processCommentAnnots({
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 typedef TLineCallback = Future<bool> Function(
-    int lineNumber, List<String> lines, String filePath,);
+  int lineNumber,
+  List<String> lines,
+  String filePath,
+);

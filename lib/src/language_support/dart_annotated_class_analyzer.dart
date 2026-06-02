@@ -306,7 +306,8 @@ final class OnAnnotatedClassParams {
 }
 
 typedef TOnAnnotatedClassCallback = Future<dynamic> Function(
-    OnAnnotatedClassParams parent,);
+  OnAnnotatedClassParams parent,
+);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -328,7 +329,8 @@ final class OnClassAnnotationFieldParams {
 }
 
 typedef TOnClassAnnotationFieldCallback = Future<dynamic> Function(
-    OnClassAnnotationFieldParams parent,);
+  OnClassAnnotationFieldParams parent,
+);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -348,7 +350,8 @@ final class OnAnnotatedMethodParams {
 }
 
 typedef TOnAnnotatedMethodCallback = Future<dynamic> Function(
-    OnAnnotatedMethodParams parent,);
+  OnAnnotatedMethodParams parent,
+);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -370,7 +373,8 @@ final class OnMethodAnnotationFieldParams {
 }
 
 typedef TOnMethodAnnotationFieldCallback = Future<dynamic> Function(
-    OnMethodAnnotationFieldParams parent,);
+  OnMethodAnnotationFieldParams parent,
+);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -392,7 +396,8 @@ final class OnAnnotatedMemberParams {
 }
 
 typedef TOnAnnotatedMemberCallback = Future<dynamic> Function(
-    OnAnnotatedMemberParams parent,);
+  OnAnnotatedMemberParams parent,
+);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
@@ -414,7 +419,8 @@ final class OnMemberAnnotationFieldParams {
 }
 
 typedef TOnMemberAnnotationFieldsCallback = Future<dynamic> Function(
-    OnMemberAnnotationFieldParams parent,);
+  OnMemberAnnotationFieldParams parent,
+);
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 

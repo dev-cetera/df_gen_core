@@ -124,7 +124,8 @@ class PathExplorer {
           }
         } catch (e) {
           Log.printRed(
-              'PathExplorer.readAll: failed to read ${finding.path} ($e)',);
+            'PathExplorer.readAll: failed to read ${finding.path} ($e)',
+          );
         }
       }
     }
