@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.8.1]
+
+- chore: bump `df_string` to `^0.4.0`. Adopts df_string 0.4.0's case-conversion digit-boundary change — digits now stay attached to the adjacent letter run (`phone_e164` instead of `phone_e_164`, `line1` instead of `line_1`). Code generated via case conversions on identifiers that embed digits will emit the new form on the next generation run; already-generated code is unaffected until regenerated. All 171 tests pass against df_string 0.4.0.
+
 ## [0.8.0]
 
 - Released @ 5/2026 (UTC)
