@@ -51,8 +51,10 @@ class GetPathCombinations extends Equatable {
     Set<String> pathPatterns,
   ) {
     return cartesianProduct(pathSets, (a, b) => p.normalize(p.join(a, b)))
-        .map((e) => matchesAnyPathPattern(e, pathPatterns) ? e : null)
-        .whereType<String>()
+        // No patterns means no filter: every combination is kept.
+        .where(
+          (e) => pathPatterns.isEmpty || matchesAnyPathPattern(e, pathPatterns),
+        )
         .toSet();
   }
 

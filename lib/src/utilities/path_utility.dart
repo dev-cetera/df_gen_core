@@ -81,16 +81,21 @@ bool pathContainsComponent(String path, Set<String> components) {
   return false;
 }
 
-/// Checks if the provided [path] matches any of the specified [pathPatterns].
+/// Checks if the provided [path] matches any of the specified [pathPatterns],
+/// which are regular expressions.
+///
+/// The [path] is matched with forward slashes as separators on every platform
+/// (`lib\src\a.dart` is matched as `lib/src/a.dart`), so write patterns
+/// with `/`.
+///
+/// An empty [pathPatterns] matches nothing and returns `false`. A caller that
+/// treats "no patterns" as "no filter" must check for that itself.
 bool matchesAnyPathPattern(String path, Set<String> pathPatterns) {
-  if (pathPatterns.isNotEmpty) {
-    final localSystemFilePath = PathUtility.i.localize(path);
-    for (final pattern in pathPatterns) {
-      if (RegExp(pattern).hasMatch(localSystemFilePath)) return true;
-    }
-    return false;
+  final posixPath = path.replaceAll('\\', '/');
+  for (final pattern in pathPatterns) {
+    if (RegExp(pattern).hasMatch(posixPath)) return true;
   }
-  return true;
+  return false;
 }
 
 /// Checks if the provided [filePath] matches any of the specified [extensions].

@@ -39,8 +39,19 @@ void main() {
   });
 
   group('matchesAnyPathPattern', () {
-    test('returns true when patterns is empty', () {
-      expect(matchesAnyPathPattern('anything', const {}), isTrue);
+    test('returns false when patterns is empty', () {
+      expect(matchesAnyPathPattern('anything', const {}), isFalse);
+    });
+
+    test('matches forward-slash patterns against backslash paths', () {
+      expect(
+        matchesAnyPathPattern(r'lib\src\foo.dart', {r'lib/src/.*\.dart$'}),
+        isTrue,
+      );
+      expect(
+        matchesAnyPathPattern('lib/src/foo.dart', {r'lib/src/.*\.dart$'}),
+        isTrue,
+      );
     });
 
     test('returns true when any pattern matches', () {

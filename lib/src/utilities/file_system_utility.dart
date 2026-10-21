@@ -220,7 +220,7 @@ final class FileSystemUtility {
 
   /// Finds all source file paths in [rootDirPath] that for the given [lang].
   ///
-  /// If [pathPatterns] is specified, only file paths that match all
+  /// If [pathPatterns] is specified, only file paths that match any of the
   /// [pathPatterns] are added to the results.
   ///
   /// The [onFileFound] callback is invoked for each file, allowing for custom
@@ -246,7 +246,7 @@ final class FileSystemUtility {
 
   /// Finds all generated file paths in [rootDirPath] that for the given [lang].
   ///
-  /// If [pathPatterns] is specified, only file paths that match all
+  /// If [pathPatterns] is specified, only file paths that match any of the
   /// [pathPatterns] are added to the results.
   ///
   /// The [onFileFound] callback is invoked for each file, allowing for custom
@@ -273,6 +273,9 @@ final class FileSystemUtility {
   /// Finds all files in [rootDirPath], including sub-directories if [recursive]
   /// is `true`.
   ///
+  /// If [pathPatterns] is not empty, only file paths that match any of the
+  /// [pathPatterns] are added to the results; an empty set adds every file.
+  ///
   /// The [onFilePathFound] callback is invoked for each file, allowing for custom
   /// filtering, i.e. if the it returns `true`, the file is added, if it returns
   /// `false`, the file is not added.
@@ -290,7 +293,9 @@ final class FileSystemUtility {
     if (filePaths != null) {
       filePaths.sort();
       for (final filePath in filePaths) {
-        final a = matchesAnyPathPattern(filePath, pathPatterns);
+        // No patterns means no filter: every file is a candidate.
+        final a = pathPatterns.isEmpty ||
+            matchesAnyPathPattern(filePath, pathPatterns);
         if (!a) continue;
 
         final b = (await onFilePathFound?.call(filePath)) ?? true;

@@ -18,7 +18,7 @@ funding:
   - https://www.patreon.com/c/robelator
   - https://github.com/sponsors/robelator
 description: A package that provides core utilities for practical code generation.
-version: 0.8.1
+version: 0.8.2
 
 ## -----------------------------------------------------------------------------
 
@@ -28,18 +28,17 @@ environment:
 ## -----------------------------------------------------------------------------
 
 dependencies:
-  analyzer: ^8.0.0
+  analyzer: ">=8.2.0 <15.0.0"
   args: ^2.7.0
   collection: ^1.19.1
-  equatable: ^2.0.7
+  equatable: ">=2.0.7 <4.0.0"
   http: ^1.4.0
   meta: ^1.16.0
   path: ^1.9.1
-  source_gen: ^4.0.0
 
   df_collection: ^0.10.0
   df_config: ^0.8.0
-  df_log: ^0.5.1
+  df_log: ^0.6.1
   df_safer_dart: ^0.21.0
   df_string: ^0.4.0
   df_type: ^0.16.0

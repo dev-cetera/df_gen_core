@@ -143,7 +143,7 @@ final class DartAnnotatedClassAnalyzer {
       if (memberNameFilter == null ||
           memberNameFilter.hasMatch(fieldElement.displayName)) {
         for (final fieldMetadata in fieldElement.metadata.annotations) {
-          final memberAnnotationName = fieldMetadata.element?.displayName;
+          final memberAnnotationName = _annotationNameOf(fieldMetadata);
           if (memberAnnotationName != null &&
               inclMemberAnnotations?.contains(memberAnnotationName) != false) {
             final fieldElements = fieldMetadata.element;
@@ -204,7 +204,7 @@ final class DartAnnotatedClassAnalyzer {
       if (methodNameFilter == null ||
           methodNameFilter.hasMatch(method.displayName)) {
         for (final methodMetadata in method.metadata.annotations) {
-          final methodAnnotationName = methodMetadata.element?.displayName;
+          final methodAnnotationName = _annotationNameOf(methodMetadata);
           if (methodAnnotationName != null &&
               inclMethodAnnotations?.contains(methodAnnotationName) != false) {
             final parent = OnAnnotatedMethodParams(
@@ -255,7 +255,7 @@ final class DartAnnotatedClassAnalyzer {
   ) async {
     for (final metadata in classElement.metadata.annotations) {
       final element = metadata.element;
-      final classAnnotationName = element?.displayName;
+      final classAnnotationName = _annotationNameOf(metadata);
       if (classAnnotationName != null &&
           inclClassAnnotations?.contains(classAnnotationName) != false) {
         final parent = OnAnnotatedClassParams(
@@ -288,6 +288,27 @@ final class DartAnnotatedClassAnalyzer {
       }
     }
   }
+}
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+/// The name an [annotation] is matched by: the class name for `@Foo()`,
+/// `Foo.named` for `@Foo.named()`, and the variable name for `@foo`.
+///
+/// Built here rather than read from the constructor's `displayName`, because
+/// analyzer 14 changed that from `Foo` to `Foo.new` for an unnamed
+/// constructor, which made `@Foo()` stop matching an annotation named `Foo`.
+String? _annotationNameOf(ElementAnnotation annotation) {
+  final element = annotation.element;
+  if (element is ConstructorElement) {
+    final className = element.enclosingElement.displayName;
+    final constructorName = element.name;
+    final isUnnamed = constructorName == null ||
+        constructorName.isEmpty ||
+        constructorName == 'new';
+    return isUnnamed ? className : '$className.$constructorName';
+  }
+  return element?.displayName;
 }
 
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░

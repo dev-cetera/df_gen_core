@@ -23,14 +23,55 @@ void main() {
       expect(r, isNot(contains('null')));
     });
 
-    test('iteration order is preserved (insertion order of map)', () {
-      // Later substitutions can be affected by earlier ones — verify the
-      // order is map-insertion order.
+    test('independent keys are all replaced', () {
       final r = replaceData('aXa', {
         'X': 'Y',
         'a': 'b',
       });
       expect(r, 'bYb');
+    });
+
+    test('single pass — a substituted value is never substituted again', () {
+      final r = replaceData('{a} {b}', {
+        '{a}': '{b}',
+        '{b}': 'X',
+      });
+      expect(r, '{b} X');
+    });
+
+    test('single pass — a value is not re-matched by an earlier key either',
+        () {
+      final r = replaceData('{a} {b}', {
+        '{b}': '{a}',
+        '{a}': 'X',
+      });
+      expect(r, 'X {a}');
+    });
+
+    test('single pass — a match never spans a substituted value', () {
+      // Replacing one after another would turn 'xAy' into 'xBy' and then
+      // match 'xB' as a whole.
+      final r = replaceData('xAy', {
+        'A': 'B',
+        'xB': 'WRONG',
+      });
+      expect(r, 'xBy');
+    });
+
+    test('overlapping keys — the key listed first wins', () {
+      expect(replaceData('ab', {'b': 'X', 'ab': 'Y'}), 'aX');
+      expect(replaceData('ab', {'ab': 'Y', 'b': 'X'}), 'Y');
+    });
+
+    test('zero-width patterns insert without consuming text', () {
+      expect(replaceData('ab', {RegExp('^'): '>', 'a': 'A'}), '>Ab');
+      expect(replaceData('ab', {'a': 'A', RegExp(r'$'): '<'}), 'Ab<');
+      expect(replaceData('ab', {'a': 'A', RegExp('^'): '>'}), '>Ab');
+    });
+
+    test('a value containing regex or interpolation syntax is literal', () {
+      final r = replaceData('v = X;', {'X': r'$1 ${y} \\'});
+      expect(r, r'v = $1 ${y} \\;');
     });
 
     test('regex patterns are honored via the Pattern type', () {

@@ -109,6 +109,27 @@ void main() {
       expect(r.length, 1);
       expect(r.first, endsWith('.txt'));
     });
+
+    test('findFilePaths with no pathPatterns keeps every file', () async {
+      await FileSystemUtility.i.writeLocalFile(p.join(tmp.path, 'a.txt'), '1');
+      await FileSystemUtility.i.writeLocalFile(p.join(tmp.path, 'b.go'), '1');
+      final r = await FileSystemUtility.i.findFilePaths(tmp.path);
+      expect(r.length, 2);
+    });
+
+    test('findFilePaths filters by forward-slash pathPatterns', () async {
+      await FileSystemUtility.i.writeLocalFile(
+        p.join(tmp.path, 'sub', 'a.txt'),
+        '1',
+      );
+      await FileSystemUtility.i.writeLocalFile(p.join(tmp.path, 'b.txt'), '1');
+      final r = await FileSystemUtility.i.findFilePaths(
+        tmp.path,
+        pathPatterns: {r'/sub/[^/]+\.txt$'},
+      );
+      expect(r.length, 1);
+      expect(r.first, endsWith('a.txt'));
+    });
   });
 
   group('FileSystemUtility.i.extractTopmostDirPaths (bug-fix regression test)',

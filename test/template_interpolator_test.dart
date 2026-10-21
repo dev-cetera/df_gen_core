@@ -23,6 +23,19 @@ void main() {
       expect(out, contains('A'));
       expect(out, contains('___UNKNOWN___'));
     });
+
+    test('an inserted value that looks like a placeholder stays as written',
+        () {
+      final ti = TemplateInterpolator<Map<String, String>>({
+        '___A___': (i) => i['a']!,
+        '___B___': (i) => i['b']!,
+      });
+      final out = ti.interpolate('___A___ ___B___', {
+        'a': '___B___',
+        'b': 'X',
+      });
+      expect(out, '___B___ X');
+    });
   });
 
   group('TemplateInterpolator.interpolateAndJoin', () {
@@ -40,6 +53,15 @@ void main() {
       });
       final out = ti.interpolateAndJoin('___X___', [1, 2], separator: ', ');
       expect(out, '1, 2');
+    });
+
+    test('joined values are not substituted again', () {
+      final ti = TemplateInterpolator<String>({
+        '___X___': (i) => i,
+        '___Y___': (i) => 'y',
+      });
+      final out = ti.interpolateAndJoin('___X___|___Y___', ['___Y___', 'a']);
+      expect(out, '___Y___\na|y\ny');
     });
   });
 }

@@ -111,6 +111,31 @@ void main() {
       expect(await File(path).exists(), isFalse);
     });
 
+    test('deleteAllGenFiles with no pathPatterns deletes every gen file',
+        () async {
+      final a = p.join(tmp.path, 'a.g.dart');
+      final b = p.join(tmp.path, 'b.g.dart');
+      final src = p.join(tmp.path, 'c.dart');
+      for (final path in [a, b, src]) {
+        await File(path).writeAsString('//');
+      }
+      await Lang.DART.deleteAllGenFiles(tmp.path);
+      expect(await File(a).exists(), isFalse);
+      expect(await File(b).exists(), isFalse);
+      expect(await File(src).exists(), isTrue);
+    });
+
+    test('deleteAllGenFiles with pathPatterns deletes only matches', () async {
+      final a = p.join(tmp.path, 'a.g.dart');
+      final b = p.join(tmp.path, 'b.g.dart');
+      for (final path in [a, b]) {
+        await File(path).writeAsString('//');
+      }
+      await Lang.DART.deleteAllGenFiles(tmp.path, pathPatterns: {r'/a\.g'});
+      expect(await File(a).exists(), isFalse);
+      expect(await File(b).exists(), isTrue);
+    });
+
     test('deleteGenFile does not touch a .dart source file', () async {
       final path = p.join(tmp.path, 'a.dart');
       await File(path).writeAsString('//');

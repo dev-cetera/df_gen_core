@@ -156,7 +156,7 @@ enum Lang {
   /// Deletes all source files from [dirPath] that match any of the provided
   /// [pathPatterns].
   ///
-  /// If [pathPatterns] is not specified, all generated files will be deleted.
+  /// If [pathPatterns] is not specified, all source files will be deleted.
   /// The [onDelete] callback is called for each file after it is deleted.
   Future<void> deleteAllSrcFiles(
     String dirPath, {
@@ -166,7 +166,9 @@ enum Lang {
     final filePaths = await FileSystemUtility.i.listLocalFilePaths(dirPath);
     if (filePaths != null) {
       final genFilePaths = filePaths.where(
-        (e) => isValidSrcFilePath(e) && matchesAnyPathPattern(e, pathPatterns),
+        (e) =>
+            isValidSrcFilePath(e) &&
+            (pathPatterns.isEmpty || matchesAnyPathPattern(e, pathPatterns)),
       );
       for (final filePath in genFilePaths) {
         await deleteSrcFile(filePath);
@@ -202,7 +204,9 @@ enum Lang {
     final filePaths = await FileSystemUtility.i.listLocalFilePaths(dirPath);
     if (filePaths != null) {
       final genFilePaths = filePaths.where(
-        (e) => isValidGenFilePath(e) && matchesAnyPathPattern(e, pathPatterns),
+        (e) =>
+            isValidGenFilePath(e) &&
+            (pathPatterns.isEmpty || matchesAnyPathPattern(e, pathPatterns)),
       );
       for (final filePath in genFilePaths) {
         await deleteGenFile(filePath);
