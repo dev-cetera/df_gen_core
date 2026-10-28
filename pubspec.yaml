@@ -16,6 +16,12 @@ repository: https://github.com/dev-cetera/df_gen_core
 description: A package that provides core utilities for practical code generation.
 version: 0.9.0
 
+topics:
+  - code-generation
+  - codegen
+  - build-runner
+  - source-gen
+  - utility
 ## -----------------------------------------------------------------------------
 
 environment:
