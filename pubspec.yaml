@@ -13,12 +13,8 @@
 name: df_gen_core
 homepage: https://dev-cetera.com/
 repository: https://github.com/dev-cetera/df_gen_core
-funding:
-  - https://www.buymeacoffee.com/dev_cetera
-  - https://www.patreon.com/c/robelator
-  - https://github.com/sponsors/robelator
 description: A package that provides core utilities for practical code generation.
-version: 0.8.2
+version: 0.9.0
 
 ## -----------------------------------------------------------------------------
 

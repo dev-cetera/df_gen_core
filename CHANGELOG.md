@@ -1,5 +1,11 @@
 # Changelog
 
+
+## [0.9.0]
+
+- chore: standardize README and CI/CD workflows, remove donation links, update contact info and repository links
+- chore: resolve analyzer issues
+
 ## [0.8.2]
 
 - Released @ 10/2026 (UTC)
